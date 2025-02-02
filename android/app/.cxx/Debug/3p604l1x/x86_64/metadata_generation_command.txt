@@ -1,0 +1,18 @@
+                        -H/home/souls/experiments/flutter/automata_app/android/app/src/main/cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=21
+-DANDROID_PLATFORM=android-21
+-DANDROID_ABI=x86_64
+-DCMAKE_ANDROID_ARCH_ABI=x86_64
+-DANDROID_NDK=/home/souls/Android/Sdk/ndk/28.0.12916984
+-DCMAKE_ANDROID_NDK=/home/souls/Android/Sdk/ndk/28.0.12916984
+-DCMAKE_TOOLCHAIN_FILE=/home/souls/Android/Sdk/ndk/28.0.12916984/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/home/souls/Android/Sdk/cmake/3.31.4/bin/ninja
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/souls/experiments/flutter/automata_app/build/app/intermediates/cxx/Debug/3p604l1x/obj/x86_64
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/home/souls/experiments/flutter/automata_app/build/app/intermediates/cxx/Debug/3p604l1x/obj/x86_64
+-DCMAKE_BUILD_TYPE=Debug
+-B/home/souls/experiments/flutter/automata_app/android/app/.cxx/Debug/3p604l1x/x86_64
+-GNinja
+                        Build command args: []
+                        Version: 2

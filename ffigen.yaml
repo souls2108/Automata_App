@@ -1,0 +1,14 @@
+name: "AutomataLibCpp"
+description: "FFI bindings for automata C++ library."
+output: "lib/plugin/ffi_plugin/automata_lib_cpp_bindings.dart"
+
+headers:
+  entry-points:
+    - "lib/CppLibrary/automata_lib.h"
+
+  include-directives:
+    - "lib/CppLibrary/automata_lib.h"
+
+comments:
+  style: any
+  length: full
