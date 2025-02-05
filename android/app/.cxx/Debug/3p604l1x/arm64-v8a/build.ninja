@@ -53,7 +53,6 @@ build CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o: CXX
   DEFINES = -Dautomata_lib_EXPORTS
   DEP_FILE = CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC
-  INCLUDES = -I/usr/local/include -I/usr/local/include/graphviz
   OBJECT_DIR = CMakeFiles/automata_lib.dir
   OBJECT_FILE_DIR = CMakeFiles/automata_lib.dir/automata_lib
 
@@ -77,44 +76,6 @@ build /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64
   SONAME_FLAG = -Wl,-soname,
   TARGET_FILE = /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so
   TARGET_PDB = automata_lib.so.dbg
-
-# =============================================================================
-# Object build statements for SHARED_LIBRARY target graphviz_lib
-
-
-#############################################
-# Order-only phony target for graphviz_lib
-
-build cmake_object_order_depends_target_graphviz_lib: phony || .
-
-build CMakeFiles/graphviz_lib.dir/graphviz_lib/graphviz_lib.c.o: C_COMPILER__graphviz_lib_unscanned_Debug /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/graphviz_lib/graphviz_lib.c || cmake_object_order_depends_target_graphviz_lib
-  DEFINES = -Dgraphviz_lib_EXPORTS
-  DEP_FILE = CMakeFiles/graphviz_lib.dir/graphviz_lib/graphviz_lib.c.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC
-  INCLUDES = -I/usr/local/include -I/usr/local/include/graphviz
-  OBJECT_DIR = CMakeFiles/graphviz_lib.dir
-  OBJECT_FILE_DIR = CMakeFiles/graphviz_lib.dir/graphviz_lib
-
-
-# =============================================================================
-# Link build statements for SHARED_LIBRARY target graphviz_lib
-
-
-#############################################
-# Link the shared library /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so
-
-build /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so: C_SHARED_LIBRARY_LINKER__graphviz_lib_Debug CMakeFiles/graphviz_lib.dir/graphviz_lib/graphviz_lib.c.o | /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/../cpp/graphviz_lib/build/libcgraph.a /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/../cpp/graphviz_lib/build/libgvc.a
-  DEP_FILE = CMakeFiles/graphviz_lib.dir/link.d
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info
-  LINK_FLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments    -Xlinker --dependency-file=CMakeFiles/graphviz_lib.dir/link.d
-  LINK_LIBRARIES = /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/../cpp/graphviz_lib/build/libcgraph.a  /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/../cpp/graphviz_lib/build/libgvc.a  -lm  -pthread  -latomic -lm
-  OBJECT_DIR = CMakeFiles/graphviz_lib.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  SONAME = libgraphviz_lib.so
-  SONAME_FLAG = -Wl,-soname,
-  TARGET_FILE = /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so
-  TARGET_PDB = graphviz_lib.so.dbg
 
 
 #############################################
@@ -144,11 +105,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 build automata_lib: phony /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so
 
-build graphviz_lib: phony /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so
-
 build libautomata_lib.so: phony /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so
-
-build libgraphviz_lib.so: phony /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so
 
 # =============================================================================
 # Folder targets.
@@ -158,7 +115,7 @@ build libgraphviz_lib.so: phony /home/souls/experiments/flutter/automata_app/and
 #############################################
 # Folder: /home/souls/experiments/flutter/automata_app/android/app/.cxx/Debug/3p604l1x/arm64-v8a
 
-build all: phony /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so
+build all: phony /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so
 
 # =============================================================================
 # Built-in targets

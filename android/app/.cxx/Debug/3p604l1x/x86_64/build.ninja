@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: automata_lib
+# Project: native_libs
 # Configurations: Debug
 # =============================================================================
 
@@ -49,12 +49,12 @@ cmake_ninja_workdir = /home/souls/experiments/flutter/automata_app/android/app/.
 
 build cmake_object_order_depends_target_automata_lib: phony || .
 
-build CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o: CXX_COMPILER__automata_lib_unscanned_Debug /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/automata_lib_interface.cpp || cmake_object_order_depends_target_automata_lib
+build CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o: CXX_COMPILER__automata_lib_unscanned_Debug /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/automata_lib/automata_lib_interface.cpp || cmake_object_order_depends_target_automata_lib
   DEFINES = -Dautomata_lib_EXPORTS
-  DEP_FILE = CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o.d
+  DEP_FILE = CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles/automata_lib.dir
-  OBJECT_FILE_DIR = CMakeFiles/automata_lib.dir
+  OBJECT_FILE_DIR = CMakeFiles/automata_lib.dir/automata_lib
   TARGET_COMPILE_PDB = CMakeFiles/automata_lib.dir/
   TARGET_PDB = /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.pdb
 
@@ -66,7 +66,7 @@ build CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o: CXX_COMPILER__au
 #############################################
 # Link the shared library /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so
 
-build /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so: CXX_SHARED_LIBRARY_LINKER__automata_lib_Debug CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o | /home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/21/liblog.so
+build /home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so: CXX_SHARED_LIBRARY_LINKER__automata_lib_Debug CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o | /home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/21/liblog.so
   DEP_FILE = CMakeFiles/automata_lib.dir/link.d
   LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info
   LINK_FLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments    -Xlinker --dependency-file=CMakeFiles/automata_lib.dir/link.d

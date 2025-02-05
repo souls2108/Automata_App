@@ -4,10 +4,10 @@ output: "lib/plugin/ffi_plugin/automata_lib_cpp_bindings.dart"
 
 headers:
   entry-points:
-    - "lib/CppLibrary/automata_lib.h"
+    - "lib/native_libs/automata_lib/automata_lib.h"
 
   include-directives:
-    - "lib/CppLibrary/automata_lib.h"
+    - "lib/native_libs/automata_lib/automata_lib.h"
 
 comments:
   style: any
