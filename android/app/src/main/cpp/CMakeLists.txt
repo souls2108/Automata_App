@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(native_libs)
 
-# Define root source directory
+# XXX: remove this line
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/../cpp)
 
 # Find necessary system libraries
@@ -26,24 +26,38 @@ set_target_properties(automata_lib PROPERTIES
 )
 
 # === Shared Library 2: Graphviz ===
-# Link Graphviz libraries
-find_library(gvc-lib gvc)
-find_library(cgraph-lib cgraph)
-find_library(cdt-lib cdt)
+# # Link Graphviz libraries
+# find_package(PkgConfig REQUIRED)
+# # pkg_check_modules(GRAPHVIZ REQUIRED gvc cgraph cdt)
+
+include_directories(
+    /usr/local/include
+    /usr/local/include/graphviz
+)
+
+
+# link_directories(/usr/local/lib)
+
+add_library(
+    graphviz_lib
+    SHARED
+    ${SRC_DIR}/graphviz_lib/graphviz_lib.c
+)
 
 target_link_libraries(
     graphviz_lib
-    ${log-lib}
-    ${gvc-lib}
-    ${cgraph-lib}
-    ${cdt-lib}
+    ${SRC_DIR}/graphviz_lib/build/libcgraph.a
+    ${SRC_DIR}/graphviz_lib/build/libgvc.a
+    -lm -pthread
 )
 
-add_library(
-    automata_lib
-    SHARED
-    ${SRC_DIR}/graphviz_lib/graphviz_lib_interface.c
-)
+# target_link_libraries(
+#     graphviz_lib 
+#     PRIVATE 
+#     "/lib/x86_64-linux-gnu/libgvc.so"
+#     "/lib/x86_64-linux-gnu/libcgraph.so"
+#     "/lib/x86_64-linux-gnu/libcdt.so"
+# )
 
 # Specify output directory for generated .so files
 set_target_properties(graphviz_lib PROPERTIES

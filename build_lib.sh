@@ -9,7 +9,7 @@ echo "🔧 Getting dependencies..."
 flutter pub get
 
 echo "🔧 Preparing C++ library..."
-cp -r lib/CppLibrary/* android/app/src/main/cpp/
+cp -r lib/native_lib/* android/app/src/main/cpp/
 
 echo "🔨 Compiling C++ for Android..."
 cd android

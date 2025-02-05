@@ -17,6 +17,12 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "graphviz_lib::@6890427a1f51a3e7e1df": {
+      "artifactName": "graphviz_lib",
+      "abi": "arm64-v8a",
+      "output": "/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so",
+      "runtimeFiles": []
+    },
     "automata_lib::@6890427a1f51a3e7e1df": {
       "artifactName": "automata_lib",
       "abi": "arm64-v8a",

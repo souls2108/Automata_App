@@ -23,6 +23,13 @@
       "artifactName": "automata_lib",
       "output": "/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so",
       "runtimeFiles": []
+    },
+    "graphviz_lib::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "graphviz_lib",
+      "output": "/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libgraphviz_lib.so",
+      "runtimeFiles": []
     }
   },
   "toolchains": {
@@ -31,7 +38,9 @@
       "cppCompilerExecutable": "/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
     }
   },
-  "cFileExtensions": [],
+  "cFileExtensions": [
+    "c"
+  ],
   "cppFileExtensions": [
     "cpp"
   ]
