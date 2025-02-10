@@ -11,7 +11,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "arm64-v8a"
+			"value" : "armeabi-v7a"
 		},
 		{
 			"name" : "ANDROID_NDK",
@@ -63,7 +63,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "arm64-v8a"
+			"value" : "armeabi-v7a"
 		},
 		{
 			"name" : "CMAKE_ANDROID_NDK",
@@ -151,7 +151,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/souls/experiments/flutter/automata_app/android/app/.cxx/RelWithDebInfo/oz322847/arm64-v8a"
+			"value" : "/home/souls/experiments/flutter/automata_app/android/app/.cxx/RelWithDebInfo/oz322847/armeabi-v7a"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -703,7 +703,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/souls/experiments/flutter/automata_app/android/app/.cxx/RelWithDebInfo/oz322847/arm64-v8a/CMakeFiles/pkgRedirects"
+			"value" : "/home/souls/experiments/flutter/automata_app/android/app/.cxx/RelWithDebInfo/oz322847/armeabi-v7a/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -799,7 +799,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/home/souls/experiments/flutter/automata_app/build/app/intermediates/cxx/RelWithDebInfo/oz322847/obj/arm64-v8a"
+			"value" : "/home/souls/experiments/flutter/automata_app/build/app/intermediates/cxx/RelWithDebInfo/oz322847/obj/armeabi-v7a"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -1015,7 +1015,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "automata_lib"
+			"value" : "native_libs"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1071,7 +1071,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/home/souls/experiments/flutter/automata_app/build/app/intermediates/cxx/RelWithDebInfo/oz322847/obj/arm64-v8a"
+			"value" : "/home/souls/experiments/flutter/automata_app/build/app/intermediates/cxx/RelWithDebInfo/oz322847/obj/armeabi-v7a"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1398,30 +1398,6 @@
 			"value" : "TRUE"
 		},
 		{
-			"name" : "automata_lib_BINARY_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/souls/experiments/flutter/automata_app/android/app/.cxx/RelWithDebInfo/oz322847/arm64-v8a"
-		},
-		{
-			"name" : "automata_lib_IS_TOP_LEVEL",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "ON"
-		},
-		{
 			"name" : "automata_lib_LIB_DEPENDS",
 			"properties" : 
 			[
@@ -1431,19 +1407,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "general;/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/21/liblog.so;"
-		},
-		{
-			"name" : "automata_lib_SOURCE_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/souls/experiments/flutter/automata_app/android/app/src/main/cpp"
+			"value" : "general;/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/21/liblog.so;"
 		},
 		{
 			"name" : "log-lib",
@@ -1455,7 +1419,43 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/21/liblog.so"
+			"value" : "/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/21/liblog.so"
+		},
+		{
+			"name" : "native_libs_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/souls/experiments/flutter/automata_app/android/app/.cxx/RelWithDebInfo/oz322847/armeabi-v7a"
+		},
+		{
+			"name" : "native_libs_IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "ON"
+		},
+		{
+			"name" : "native_libs_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/souls/experiments/flutter/automata_app/android/app/src/main/cpp"
 		}
 	],
 	"kind" : "cache",

@@ -49,28 +49,25 @@ class _GraphViewerState extends State<GraphViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Graph Renderer")),
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: InAppWebView(
-                initialData: InAppWebViewInitialData(data: htmlContent),
-                onWebViewCreated: (controller) {
-                  webViewController = controller;
-                },
-                onLoadStop: (controller, url) {
-                  setState(() {
-                    _isWebViewLoaded = true;
-                    devtools.log("WebView loaded!");
-                    generateGraph(widget.dotString);
-                  });
-                },
-              ),
+    return Center(
+      child: Column(
+        children: [
+          Expanded(
+            child: InAppWebView(
+              initialData: InAppWebViewInitialData(data: htmlContent),
+              onWebViewCreated: (controller) {
+                webViewController = controller;
+              },
+              onLoadStop: (controller, url) {
+                setState(() {
+                  _isWebViewLoaded = true;
+                  devtools.log("WebView loaded!");
+                  generateGraph(widget.dotString);
+                });
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -114,7 +111,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final TextEditingController _regex;
-  String _output = '';
+  String _dotNFA = '';
+  String _dotDFA = '';
+  String _dotMDFA = '';
+  bool _showGraph = false;
 
   @override
   void initState() {
@@ -128,48 +128,81 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  void handleButtonPress(String regex) {
+    final regexPointer = regex.toNativeUtf8().cast<Char>();
+    var lib = AutomataLib().nativeLibrary;
+    final nfa = lib.NFA_create_instance(regexPointer);
+    final dfa = lib.DFA_create_instance(regexPointer);
+    final mdfa = lib.DFA_minimalDFA(dfa);
+    final nfaDotPointer = lib.NFA_generateDotText(nfa);
+    final dfaDotPointer = lib.DFA_generateDotText(dfa);
+    final mdfaDotPointer = lib.DFA_generateDotText(mdfa);
+
+    setState(() {
+      _dotNFA = nfaDotPointer.cast<Utf8>().toDartString();
+      _dotDFA = dfaDotPointer.cast<Utf8>().toDartString();
+      _dotMDFA = mdfaDotPointer.cast<Utf8>().toDartString();
+      _showGraph = true;
+    });
+
+    malloc.free(nfaDotPointer);
+    malloc.free(dfaDotPointer);
+    malloc.free(mdfaDotPointer);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter Demo'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _regex,
-            decoration: const InputDecoration(
-              labelText: 'Regex',
-              hintText: 'Enter a regex',
-            ),
+      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        TextField(
+          controller: _regex,
+          decoration: const InputDecoration(
+            labelText: 'Regex',
+            hintText: 'Enter a regex',
           ),
-          ElevatedButton(
-            onPressed: () {
-              final regexPointer = _regex.text.toNativeUtf8().cast<Char>();
-              final dfa =
-                  AutomataLib().nativeLibrary.DFA_create_instance(regexPointer);
-              final mdfa = AutomataLib().nativeLibrary.DFA_minimalDFA(dfa);
-              malloc.free(regexPointer);
-
-              setState(() {
-                final outputPointer =
-                    AutomataLib().nativeLibrary.DFA_generateDotText(mdfa);
-                _output = outputPointer.cast<Utf8>().toDartString();
-                malloc.free(outputPointer);
-              });
-
-              Navigator.push(
+        ),
+        ElevatedButton(
+          onPressed: () {
+            handleButtonPress(_regex.text);
+            Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => GraphViewer(dotString: _output),
-                ),
-              );
-            },
-            child: const Text('Match'),
-          ),
-        ],
-      ),
+                  builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Automata'),
+                      ),
+                      body: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const Text('NFA:'),
+                            SizedBox(
+                              height: 300,
+                              child: GraphViewer(dotString: _dotNFA),
+                            ),
+                            const Text('DFA:'),
+                            SizedBox(
+                                height: 300,
+                                child: Center(
+                                  child: GraphViewer(dotString: _dotDFA),
+                                )),
+                            const Text('Minimal DFA:'),
+                            SizedBox(
+                              height: 300,
+                              child: GraphViewer(dotString: _dotMDFA),
+                            ),
+                          ],
+                        ),
+                      )),
+                ));
+            devtools.log(_showGraph.toString());
+            devtools.log(_dotNFA);
+          },
+          child: const Text('Generate'),
+        ),
+      ]),
     );
   }
 }
