@@ -1,15 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="viz.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script id="graphviz-script"></script>
+  <script>
+    async function renderGraph(dot) {
+      if (!window.Graphviz) {
+        console.error("Graphviz not loaded");
+        return;
+      }
+
+      const graphviz = window.Graphviz.load();
+      document.getElementById('graph').innerHTML = graphviz.layout(dot, "svg", "dot");
+    }
+
+    window.addEventListener("message", (event) => {
+      renderGraph(event.data);
+    });
+
+    window.flutter_inappwebview.callHandler("getGraphData").then(dot => {
+      renderGraph(dot);
+    });
+  </script>
 </head>
 <body>
+  <div id="graph"></div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div id="graph"></div>
+  <img src="https://media.licdn.com/dms/image/v2/C5603AQG_eaSRYzDdVQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1613735418910?e=1744848000&v=beta&t=wJDdNHlj2DOpeE64-0MpOi-_0QVv7TM64s5we7OMqGQ">
   <script>
-    console.log("Viz.js is loading...");
-    function generateGraph(dot) {
-      console.log("Generating graph...");
-      return Viz(dot, { format: "svg" });
+    window.addEventListener("message", async (event) => {
+      console.log("Helloo");
+      if (event.data.type === "LOAD_SCRIPT") {
+        const script = document.createElement("script");
+        script.textContent = event.data.scriptContent;
+        document.body.appendChild(script);
+
+        // Now Graphviz is available, use it
+        const Graphviz = await import("data:text/javascript;base64," + btoa(script.textContent))
+          .then(m => m.Graphviz);
+        const graphviz = Graphviz.load();
+        
+        // Once Graphviz is loaded, process the DOT text
+        renderGraph(event.data.dotText, graphviz);
+      }
+    });
+
+    function renderGraph(dot, graphviz) {
+      document.getElementById('graph').innerHTML = graphviz.layout(dot, "svg", "dot");
     }
   </script>
 </body>
-</html>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module">
+    // import {Graphviz} from "/assets/viz.js";
+    const Graphviz = await import("/assets/viz.js").then(m => m.Graphviz);
+    const graphviz = Graphviz.load();
+
+    async function renderGraph(dot) {
+      document.getElementById('graph').innerHTML = graphviz.layout(dot, "svg", "dot");
+    }
+
+    window.addEventListener("message", (event) => {
+      renderGraph(event.data);
+    });
+
+    window.flutter_inappwebview.callHandler("getGraphData").then(dot => {
+      renderGraph(dot);
+    });
+  </script>
+</head>
+<body>
+  <img src="https://media.licdn.com/dms/image/v2/C5603AQG_eaSRYzDdVQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1613735418910?e=1744848000&v=beta&t=wJDdNHlj2DOpeE64-0MpOi-_0QVv7TM64s5we7OMqGQ">
+  <div 
+  id="graph", 
+  style="display: flex;
+    justify-content: center; 
+    align-items: center;     
+    width: 100%; 
+    height: 100%;"
+  ></div>
+</body>
+</html> -->

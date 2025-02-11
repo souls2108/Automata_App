@@ -1,23 +1,33 @@
 import 'dart:ffi';
-import 'dart:typed_data';
-import 'dart:convert';
 
+import 'package:automata_app/widgets/graphviz_webview_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
 import 'package:ffi/ffi.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'dart:developer' as devtools show log;
 
 void main() {
+  const String dotString = '''
+digraph finite_state_machine {
+          fontname="Helvetica,Arial,sans-serif"
+          node [fontname="Helvetica,Arial,sans-serif"]
+          edge [fontname="Helvetica,Arial,sans-serif"]
+          rankdir=LR;
+          node [shape = doublecircle];
+          node [shape = doublecircle]; -1;
+          node [shape = circle];
+      	 0 -> -1 [label = "a"];
+      
+      }
+''';
   runApp(MaterialApp(
     title: 'Flutter Demo',
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
     ),
-    home: HomePage(),
+    home: GraphvizWebView(dotText: dotString),
   ));
 }
 
@@ -180,18 +190,18 @@ class _HomePageState extends State<HomePage> {
                             const Text('NFA:'),
                             SizedBox(
                               height: 300,
-                              child: GraphViewer(dotString: _dotNFA),
+                              child: GraphvizWebView(dotText: _dotNFA),
                             ),
                             const Text('DFA:'),
                             SizedBox(
                                 height: 300,
                                 child: Center(
-                                  child: GraphViewer(dotString: _dotDFA),
+                                  child: GraphvizWebView(dotText: _dotDFA),
                                 )),
                             const Text('Minimal DFA:'),
                             SizedBox(
                               height: 300,
-                              child: GraphViewer(dotString: _dotMDFA),
+                              child: GraphvizWebView(dotText: _dotMDFA),
                             ),
                           ],
                         ),
