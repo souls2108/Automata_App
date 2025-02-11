@@ -1,15 +1,6 @@
 # ninja log v5
-0	3686	1738478825390891188	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-3688	3840	1738478825580891184	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
-3	3488	1738479233060873539	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-3488	3609	1738479233220872215	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
-3	3368	1738479698750815863	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-3368	3571	1738479699000816172	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
-23	4310	1738481673473115575	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-4310	4535	1738481673753116125	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
-44	4052	1738482129563066210	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-4052	4247	1738482129793066698	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
-31	2813	1738482619563020186	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-2813	2973	1738482619753020253	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
-30	3050	1738483975240059291	CMakeFiles/automata_lib.dir/automata_lib_interface.cpp.o	9c89ab5713b382c0
-3051	3229	1738483975450059340	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	2ca861aba45026d8
+2	143	1738689066449572272	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	22c77ef76dc1309b
+5	208	1738688748993306346	CMakeFiles/graphviz_lib.dir/graphviz_lib/graphviz_lib.c.o	1cd20c9ad7220c4c
+4	2741	1738688751490306374	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	9fd8be2d36a4acd1
+1	3820	1738745068929349972	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	37054e99ce66a4e1
+3821	4040	1738745069202387653	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/arm64-v8a/libautomata_lib.so	22c77ef76dc1309b

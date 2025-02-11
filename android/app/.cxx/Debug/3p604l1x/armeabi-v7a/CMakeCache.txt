@@ -176,7 +176,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=automata_lib
+CMAKE_PROJECT_NAME:STATIC=native_libs
 
 //Ranlib
 CMAKE_RANLIB:FILEPATH=/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
@@ -254,20 +254,20 @@ CMAKE_TOOLCHAIN_FILE:FILEPATH=/home/souls/Android/Sdk/ndk/28.0.12916984/build/cm
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Value Computed by CMake
-automata_lib_BINARY_DIR:STATIC=/home/souls/experiments/flutter/automata_app/android/app/.cxx/Debug/3p604l1x/armeabi-v7a
-
-//Value Computed by CMake
-automata_lib_IS_TOP_LEVEL:STATIC=ON
-
 //Dependencies for the target
 automata_lib_LIB_DEPENDS:STATIC=general;/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/21/liblog.so;
 
-//Value Computed by CMake
-automata_lib_SOURCE_DIR:STATIC=/home/souls/experiments/flutter/automata_app/android/app/src/main/cpp
-
 //Path to a library.
 log-lib:FILEPATH=/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/21/liblog.so
+
+//Value Computed by CMake
+native_libs_BINARY_DIR:STATIC=/home/souls/experiments/flutter/automata_app/android/app/.cxx/Debug/3p604l1x/armeabi-v7a
+
+//Value Computed by CMake
+native_libs_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+native_libs_SOURCE_DIR:STATIC=/home/souls/experiments/flutter/automata_app/android/app/src/main/cpp
 
 
 ########################
