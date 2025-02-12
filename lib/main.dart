@@ -8,6 +8,8 @@ import 'package:ffi/ffi.dart';
 
 import 'dart:developer' as devtools show log;
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 void main() {
   const String dotString = '''
 digraph finite_state_machine {
@@ -27,14 +29,14 @@ digraph finite_state_machine {
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
     ),
-    home: GraphvizWebView(dotText: dotString),
+    home: GraphViewer(dotString: dotString),
   ));
 }
 
 class GraphViewer extends StatefulWidget {
   String dotString;
 
-  GraphViewer({required this.dotString});
+  GraphViewer({super.key, required this.dotString});
   @override
   _GraphViewerState createState() => _GraphViewerState();
 }
@@ -58,10 +60,20 @@ class _GraphViewerState extends State<GraphViewer> {
   ''';
 
   @override
+  void initState() {
+    super.initState();
+    // Add JavaScript handler
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         children: [
+          Center(
+            child: SvgPicture.string(svgData),
+          ),
+          Text("Webview loaded: $_isWebViewLoaded"),
           Expanded(
             child: InAppWebView(
               initialData: InAppWebViewInitialData(data: htmlContent),
@@ -69,6 +81,16 @@ class _GraphViewerState extends State<GraphViewer> {
                 webViewController = controller;
               },
               onLoadStop: (controller, url) {
+                controller.addJavaScriptHandler(
+                  handlerName: 'svgDataHandler',
+                  callback: (args) {
+                    devtools.log("SVG Data received");
+                    setState(() {
+                      svgData = args[0];
+                      devtools.log(svgData.substring(0, 20));
+                    });
+                  },
+                );
                 setState(() {
                   _isWebViewLoaded = true;
                   devtools.log("WebView loaded!");
@@ -98,14 +120,19 @@ class _GraphViewerState extends State<GraphViewer> {
             viz.renderSVGElement("$escapedDot")
                 .then(function(element) {
                     document.getElementById('graph').appendChild(element);
+                    let svgData = new XMLSerializer().serializeToString(element);
+                    window.flutter_inappwebview.callHandler('svgDataHandler', svgData);
                 })
+                .catch(error => {
+                    console.error(error);
+                });
           } else {
             console.log("Error: Viz.js not loaded");
-            return "Error: Viz.js not loaded";
           }
         })();
       ''';
-      await webViewController!.evaluateJavascript(source: jsCode);
+      final res = await webViewController!.evaluateJavascript(source: jsCode);
+      devtools.log("JavaScript executed: $res");
     } catch (e) {
       devtools.log("Error evaluating JavaScript: $e");
     }
@@ -190,18 +217,18 @@ class _HomePageState extends State<HomePage> {
                             const Text('NFA:'),
                             SizedBox(
                               height: 300,
-                              child: GraphvizWebView(dotText: _dotNFA),
+                              child: GraphvizWebView(dotString: _dotNFA),
                             ),
                             const Text('DFA:'),
                             SizedBox(
                                 height: 300,
                                 child: Center(
-                                  child: GraphvizWebView(dotText: _dotDFA),
+                                  child: GraphvizWebView(dotString: _dotDFA),
                                 )),
                             const Text('Minimal DFA:'),
                             SizedBox(
                               height: 300,
-                              child: GraphvizWebView(dotText: _dotMDFA),
+                              child: GraphvizWebView(dotString: _dotMDFA),
                             ),
                           ],
                         ),
