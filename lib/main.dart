@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
 import 'package:automata_app/widgets/graphviz_webview_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -11,25 +12,13 @@ import 'dart:developer' as devtools show log;
 import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
-  const String dotString = '''
-digraph finite_state_machine {
-          fontname="Helvetica,Arial,sans-serif"
-          node [fontname="Helvetica,Arial,sans-serif"]
-          edge [fontname="Helvetica,Arial,sans-serif"]
-          rankdir=LR;
-          node [shape = doublecircle];
-          node [shape = doublecircle]; -1;
-          node [shape = circle];
-      	 0 -> -1 [label = "a"];
-      
-      }
-''';
+  GraphSvgProvider.instance;
   runApp(MaterialApp(
     title: 'Flutter Demo',
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
     ),
-    home: GraphViewer(dotString: dotString),
+    home: HomePage(),
   ));
 }
 
@@ -214,28 +203,39 @@ class _HomePageState extends State<HomePage> {
                       body: SingleChildScrollView(
                         child: Column(
                           children: [
-                            const Text('NFA:'),
-                            SizedBox(
-                              height: 300,
-                              child: GraphvizWebView(dotString: _dotNFA),
-                            ),
-                            const Text('DFA:'),
-                            SizedBox(
-                                height: 300,
-                                child: Center(
-                                  child: GraphvizWebView(dotString: _dotDFA),
-                                )),
+                            // const Text('NFA:'),
+                            // SizedBox(
+                            //   height: 300,
+                            //   child: GraphSvgProvider().generate(_dotNFA),
+                            // ),
+                            // const Text('DFA:'),
+                            // SizedBox(
+                            //     height: 300,
+                            //     child: Center(
+                            //       child: GraphSvgProvider().generate(_dotDFA),
+                            //     )),
                             const Text('Minimal DFA:'),
                             SizedBox(
                               height: 300,
-                              child: GraphvizWebView(dotString: _dotMDFA),
+                              child: FutureBuilder<Widget>(
+                                future: GraphSvgProvider.instance
+                                    .generateGraphSVG(_dotMDFA),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    return snapshot.data ?? SizedBox.shrink();
+                                  }
+                                },
+                              ),
                             ),
                           ],
                         ),
                       )),
                 ));
-            devtools.log(_showGraph.toString());
-            devtools.log(_dotNFA);
           },
           child: const Text('Generate'),
         ),
