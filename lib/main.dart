@@ -1,15 +1,11 @@
 import 'dart:ffi';
 
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
-import 'package:automata_app/widgets/graphviz_webview_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
 import 'package:ffi/ffi.dart';
 
 import 'dart:developer' as devtools show log;
-
-import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   GraphSvgProvider.instance;
@@ -34,7 +30,6 @@ class _HomePageState extends State<HomePage> {
   String _dotNFA = '';
   String _dotDFA = '';
   String _dotMDFA = '';
-  bool _showGraph = false;
 
   @override
   void initState() {
@@ -62,7 +57,6 @@ class _HomePageState extends State<HomePage> {
       _dotNFA = nfaDotPointer.cast<Utf8>().toDartString();
       _dotDFA = dfaDotPointer.cast<Utf8>().toDartString();
       _dotMDFA = mdfaDotPointer.cast<Utf8>().toDartString();
-      _showGraph = true;
     });
 
     malloc.free(nfaDotPointer);
@@ -97,17 +91,19 @@ class _HomePageState extends State<HomePage> {
                       body: SingleChildScrollView(
                         child: Column(
                           children: [
-                            // const Text('NFA:'),
-                            // SizedBox(
-                            //   height: 300,
-                            //   child: GraphSvgProvider().generate(_dotNFA),
-                            // ),
-                            // const Text('DFA:'),
-                            // SizedBox(
-                            //     height: 300,
-                            //     child: Center(
-                            //       child: GraphSvgProvider().generate(_dotDFA),
-                            //     )),
+                            const Text('NFA:'),
+                            SizedBox(
+                              height: 300,
+                              child:
+                                  GraphSvgProvider.instance.generate(_dotNFA),
+                            ),
+                            const Text('DFA:'),
+                            SizedBox(
+                                height: 300,
+                                child: Center(
+                                  child: GraphSvgProvider.instance
+                                      .generate(_dotDFA),
+                                )),
                             const Text('Minimal DFA:'),
                             SizedBox(
                               height: 300,
