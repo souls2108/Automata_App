@@ -1,6 +1,8 @@
 import 'dart:ffi';
 
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
+import 'package:automata_app/views/create_automata/create_automata_view.dart';
+import 'package:automata_app/widgets/editable_datatable.dart';
 import 'package:flutter/material.dart';
 import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
 import 'package:ffi/ffi.dart';
@@ -14,7 +16,7 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
     ),
-    home: HomePage(),
+    home: CreateAutomataView(),
   ));
 }
 
