@@ -19,7 +19,7 @@ class _CreateFromRegexState extends State<CreateFromRegex> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextField(
           controller: _regex,
@@ -28,24 +28,12 @@ class _CreateFromRegexState extends State<CreateFromRegex> {
           ),
         ),
         const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          spacing: 10,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                //TODO: Implement handleButtonPress
-              },
-              child: const Text('Create DFA'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //TODO: Implement handleButtonPress
-              },
-              child: const Text('Create NFA'),
-            ),
-          ],
-        )
+        ElevatedButton(
+          onPressed: () {
+            //TODO: Implement handleButtonPress
+          },
+          child: const Text('Create Automata'),
+        ),
       ],
     );
   }

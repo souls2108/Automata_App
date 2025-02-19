@@ -100,10 +100,9 @@ class _CreateFromTableState extends State<CreateFromTable> {
         ),
         ElevatedButton(
           onPressed: () {
-            devtools.log('Create DFA');
             devtools.log(_tableData.toString());
           },
-          child: const Text('Create DFA'),
+          child: const Text('Create Automata'),
         ),
       ],
     );
