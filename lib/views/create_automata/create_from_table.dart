@@ -1,5 +1,3 @@
-import 'package:automata_app/widgets/editable_datatable.dart';
-import 'package:editable/editable.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
@@ -13,8 +11,7 @@ class CreateFromTable extends StatefulWidget {
 }
 
 class _CreateFromTableState extends State<CreateFromTable> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _symbolController;
+  late final TextEditingController _symbolController;
   Set<String> _symbols = {};
   String value = '';
   final List<Map<String, int?>> _tableData = [];
@@ -23,6 +20,12 @@ class _CreateFromTableState extends State<CreateFromTable> {
   void initState() {
     _symbolController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _symbolController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,43 +54,47 @@ class _CreateFromTableState extends State<CreateFromTable> {
           },
         ),
         const SizedBox(height: 25),
-        SizedBox(
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+          ),
           height: MediaQuery.of(context).size.height * 0.5,
           child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: _tableColumns(),
-                        rows: _tableRows(),
-                      )),
-                  const SizedBox(height: 25),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _addRow,
-                        label: const Text('Add Row'),
-                        icon: const Icon(Icons.add),
+            child: Column(
+              children: [
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: _tableColumns(),
+                      rows: _tableRows(),
+                      border: TableBorder.all(
+                        color: Colors.black,
+                        width: 0.25,
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            if (_tableData.isNotEmpty) {
-                              _tableData.removeLast();
-                            }
-                          });
-                        },
-                        label: const Text('Delete Row'),
-                        icon: const Icon(Icons.delete),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                    )),
+                const SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _addRow,
+                      label: const Text('Add Row'),
+                      icon: const Icon(Icons.add),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          if (_tableData.isNotEmpty) {
+                            _tableData.removeLast();
+                          }
+                        });
+                      },
+                      label: const Text('Delete Row'),
+                      icon: const Icon(Icons.delete),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ),
@@ -119,7 +126,9 @@ class _CreateFromTableState extends State<CreateFromTable> {
         ),
         for (var symbol in _symbols)
           DataCell(TextField(
-            keyboardType: TextInputType.name,
+            autocorrect: false,
+            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
@@ -128,6 +137,9 @@ class _CreateFromTableState extends State<CreateFromTable> {
                 _tableData[i][symbol] = int.tryParse(value);
               });
             },
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+            ),
           ))
       ];
       tableRows.add(DataRow.byIndex(cells: row, index: i));
