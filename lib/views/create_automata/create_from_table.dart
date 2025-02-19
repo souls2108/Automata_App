@@ -13,7 +13,7 @@ class CreateFromTable extends StatefulWidget {
 class _CreateFromTableState extends State<CreateFromTable> {
   late final TextEditingController _symbolController;
   Set<String> _symbols = {};
-  String value = '';
+  String value = ''; //XXX: Remove this
   final List<Map<String, int?>> _tableData = [];
 
   @override
