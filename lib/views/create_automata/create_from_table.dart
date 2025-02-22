@@ -1,3 +1,6 @@
+import 'package:automata_app/services/automata/automata.dart';
+import 'package:automata_app/services/automata/automata_exceptions.dart';
+import 'package:automata_app/views/automata_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
@@ -13,8 +16,10 @@ class CreateFromTable extends StatefulWidget {
 class _CreateFromTableState extends State<CreateFromTable> {
   late final TextEditingController _symbolController;
   Set<String> _symbols = {};
-  String value = ''; //XXX: Remove this
   final List<Map<String, int?>> _tableData = [];
+  Set<String> _errorCells = {};
+
+  final double _cellWidth = 70;
 
   @override
   void initState() {
@@ -56,7 +61,7 @@ class _CreateFromTableState extends State<CreateFromTable> {
         const SizedBox(height: 25),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
+            border: Border.all(color: Colors.transparent),
           ),
           height: MediaQuery.of(context).size.height * 0.5,
           child: SingleChildScrollView(
@@ -65,6 +70,9 @@ class _CreateFromTableState extends State<CreateFromTable> {
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
+                      columnSpacing: 0,
+                      horizontalMargin: 0,
+                      clipBehavior: Clip.hardEdge,
                       columns: _tableColumns(),
                       rows: _tableRows(),
                       border: TableBorder.all(
@@ -98,9 +106,43 @@ class _CreateFromTableState extends State<CreateFromTable> {
             ),
           ),
         ),
+        const SizedBox(height: 35),
         ElevatedButton(
           onPressed: () {
-            devtools.log(_tableData.toString());
+            try {
+              final transitionTable = _tableData.map((row) {
+                final rowMap = {
+                  for (var element in _symbols) element: row[element]
+                };
+                return rowMap;
+              }).toList();
+              final finalStates = _tableData
+                  .where((row) => row['final'] == 1)
+                  .map((row) => _tableData.indexOf(row))
+                  .toList();
+              final automata =
+                  Automata.fromDFAtable(_symbols, transitionTable, finalStates);
+              automata.generateDotText();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AutomataView(automata: automata),
+                ),
+              );
+            } on InvalidDFASymbolException catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("${e.toString()} at ${e.symbol}")),
+              );
+            } on InvalidDFATableException catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(e.message)),
+              );
+              setState(() {
+                _errorCells = e.errorCells;
+              });
+              devtools.log(e.errorCells.toString());
+            } catch (e) {
+              devtools.log(e.toString());
+            }
           },
           child: const Text('Create Automata'),
         ),
@@ -112,32 +154,42 @@ class _CreateFromTableState extends State<CreateFromTable> {
     var tableRows = <DataRow>[];
     for (var i = 0; i < _tableData.length; ++i) {
       var row = [
-        DataCell(Text('$i')),
+        DataCell(_DataTableCustomCell(child: Text('$i'))),
         DataCell(
-          Checkbox(
-            value: _tableData[i]['final'] == 1,
-            onChanged: (value) {
-              setState(() {
-                _tableData[i]['final'] = value! ? 1 : 0;
-              });
-            },
+          _DataTableCustomCell(
+            child: Checkbox(
+              value: _tableData[i]['final'] == 1,
+              onChanged: (value) {
+                setState(() {
+                  _tableData[i]['final'] = value! ? 1 : 0;
+                });
+              },
+            ),
           ),
         ),
         for (var symbol in _symbols)
-          DataCell(TextField(
-            autocorrect: false,
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            onChanged: (value) {
-              setState(() {
-                _tableData[i][symbol] = int.tryParse(value);
-              });
-            },
-            decoration: const InputDecoration(
-              border: InputBorder.none,
+          DataCell(_DataTableCustomCell(
+            child: ColoredBox(
+              color: (_errorCells.contains('($i,$symbol)'))
+                  ? const Color.fromARGB(95, 244, 67, 54)
+                  : Colors.transparent,
+              child: TextField(
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _tableData[i][symbol] = int.tryParse(value);
+                  });
+                },
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+              ),
             ),
           ))
       ];
@@ -149,43 +201,38 @@ class _CreateFromTableState extends State<CreateFromTable> {
   List<DataColumn> _tableColumns() {
     return [
       DataColumn(
-        label: const Text('State'),
+        label: _DataTableCustomCell(child: const Text('State')),
       ),
       DataColumn(
-        label: const Text('Final'),
+        label: _DataTableCustomCell(child: const Text('Final')),
       ),
       for (var symbol in _symbols)
         DataColumn(
-          label: Text(symbol),
+          label: _DataTableCustomCell(child: Text(symbol)),
         ),
     ];
   }
 
   void _addRow() {
-    // for (var symbol in _symbols)
-    //   DataCell(
-    //     TextFormField(
-    //       keyboardType: TextInputType.number,
-    //       textInputAction: TextInputAction.next,
-    //       validator: (value) {
-    //         if (value!.isEmpty) return 'Please enter a value';
-    //         final number = int.tryParse(value);
-    //         if (number == null) return 'Please enter a number';
-    //         if (number < 0 || number >= _transitionTable.length) {
-    //           return 'Please enter a valid state';
-    //         }
-    //         return null;
-    //       },
-    //       onFieldSubmitted: (value) {
-    //         FocusScope.of(context).nextFocus();
-    //       },
-    //       onSaved: (newValue) {
-    //         _transitionTable[stateNumber]?[symbol] = int.parse(newValue!);
-    //       },
-    //     ),
-    //   ),
     setState(() {
       _tableData.add({'final': 0, for (var symbol in _symbols) symbol: null});
     });
+  }
+}
+
+class _DataTableCustomCell extends StatelessWidget {
+  const _DataTableCustomCell({required this.child});
+
+  final double cellWidth = 70;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: cellWidth,
+      child: Center(
+        child: child,
+      ),
+    );
   }
 }

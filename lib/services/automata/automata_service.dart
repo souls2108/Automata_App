@@ -4,6 +4,8 @@ import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
 import 'package:automata_app/services/automata/automata_exceptions.dart';
 import 'package:ffi/ffi.dart';
 
+import 'dart:developer' as devtools show log;
+
 class AutomataService {
   static final AutomataService _instance = AutomataService._internal();
   static final _lib = AutomataLib().nativeLibrary;
@@ -34,26 +36,31 @@ class AutomataService {
   ) {
     for (var sym in symbols) {
       if (sym.length != 1) {
-        throw InvalidAutomataInputException(
-          message: 'Invalid symbol $sym',
+        throw InvalidDFASymbolException(
+          symbol: sym,
         );
       }
       if (sym == 'E') {
-        throw InvalidAutomataInputException(
-          message: 'Invalid symbol Epsilon: $sym',
+        throw InvalidDFASymbolException(
+          symbol: sym,
         );
       }
     }
-    for (var i = 0; i < tableData.length; i++) {
-      for (var j = 0; j < symbols.length; j++) {
-        if (tableData[i][symbols.elementAt(j)] == null ||
-            tableData[i][symbols.elementAt(j)]! < 0 ||
-            tableData[i][symbols.elementAt(j)]! >= tableData.length) {
-          throw InvalidAutomataInputException(
-            message: 'Invalid table data at row $i and column $j',
-          );
+
+    final errorCells = <String>{};
+    for (var row = 0; row < tableData.length; row++) {
+      for (var symbol in symbols) {
+        if (tableData[row][symbol] == null ||
+            tableData[row][symbol]! < 0 ||
+            tableData[row][symbol]! >= tableData.length) {
+          errorCells.add('($row,$symbol)');
         }
       }
+    }
+    if (errorCells.isNotEmpty) {
+      throw InvalidDFATableException(
+        errorCells: errorCells,
+      );
     }
 
     final symbolsSize = symbols.length;
@@ -104,19 +111,19 @@ class AutomataService {
       'mdfa': '',
     };
 
-    if (dfaInstance != nullptr) {
+    if (dfaInstance != null) {
       final dfaDotPointer = _lib.DFA_generateDotText(dfaInstance);
       dotText['dfa'] = dfaDotPointer.cast<Utf8>().toDartString();
       malloc.free(dfaDotPointer);
     }
 
-    if (nfaInstance != nullptr) {
+    if (nfaInstance != null) {
       final nfaDotPointer = _lib.NFA_generateDotText(nfaInstance);
       dotText['nfa'] = nfaDotPointer.cast<Utf8>().toDartString();
       malloc.free(nfaDotPointer);
     }
 
-    if (mdfaInstance != nullptr) {
+    if (mdfaInstance != null) {
       final mdfaDotPointer = _lib.DFA_generateDotText(mdfaInstance);
       dotText['mdfa'] = mdfaDotPointer.cast<Utf8>().toDartString();
       malloc.free(mdfaDotPointer);

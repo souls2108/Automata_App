@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
+import 'package:automata_app/views/create_automata/create_automata_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
@@ -15,115 +16,14 @@ void main() {
     title: 'Flutter Demo',
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
-    ),
-    home: HomePage(),
-  ));
-}
-
-class GraphViewer extends StatefulWidget {
-  String dotString;
-
-  GraphViewer({super.key, required this.dotString});
-  @override
-  _GraphViewerState createState() => _GraphViewerState();
-}
-
-class _GraphViewerState extends State<GraphViewer> {
-  InAppWebViewController? webViewController;
-  bool _isWebViewLoaded = false;
-  String svgData = '';
-
-  String htmlContent = '''
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
-  </head>
-  <body>
-    <div id="graph"></div>
-  </body>
-  </html>
-  ''';
-
-  @override
-  void initState() {
-    super.initState();
-    // Add JavaScript handler
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Center(
-            child: SvgPicture.string(svgData),
-          ),
-          Text("Webview loaded: $_isWebViewLoaded"),
-          Expanded(
-            child: InAppWebView(
-              initialData: InAppWebViewInitialData(data: htmlContent),
-              onWebViewCreated: (controller) {
-                webViewController = controller;
-              },
-              onLoadStop: (controller, url) {
-                controller.addJavaScriptHandler(
-                  handlerName: 'svgDataHandler',
-                  callback: (args) {
-                    devtools.log("SVG Data received");
-                    setState(() {
-                      svgData = args[0];
-                      devtools.log(svgData.substring(0, 20));
-                    });
-                  },
-                );
-                setState(() {
-                  _isWebViewLoaded = true;
-                  devtools.log("WebView loaded!");
-                  generateGraph(widget.dotString);
-                });
-              },
-            ),
-          ),
-        ],
+      dataTableTheme: DataTableThemeData(
+        dataRowMaxHeight: 50.0,
+        dataRowMinHeight: 50.0,
+        headingRowAlignment: MainAxisAlignment.center,
       ),
-    );
-  }
-
-  void generateGraph(String dot) async {
-    if (webViewController == null || !_isWebViewLoaded) {
-      devtools.log("WebView is not ready");
-      return;
-    }
-    devtools.log("Generating graph...");
-    try {
-      String escapedDot = dot.replaceAll('\n', '\\n').replaceAll('"', '\\"');
-      String jsCode = '''
-        (function() {
-          if (typeof Viz !== 'undefined') {
-            console.log("Executing Viz...");
-            let viz = new Viz();
-            viz.renderSVGElement("$escapedDot")
-                .then(function(element) {
-                    document.getElementById('graph').appendChild(element);
-                    let svgData = new XMLSerializer().serializeToString(element);
-                    window.flutter_inappwebview.callHandler('svgDataHandler', svgData);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-          } else {
-            console.log("Error: Viz.js not loaded");
-          }
-        })();
-      ''';
-      final res = await webViewController!.evaluateJavascript(source: jsCode);
-      devtools.log("JavaScript executed: $res");
-    } catch (e) {
-      devtools.log("Error evaluating JavaScript: $e");
-    }
-  }
+    ),
+    home: CreateAutomataView(),
+  ));
 }
 
 class HomePage extends StatefulWidget {
@@ -215,7 +115,8 @@ class _HomePageState extends State<HomePage> {
                             const Text('Minimal DFA:'),
                             SizedBox(
                               height: 300,
-                              child: GraphSvgProvider().generate(_dotMDFA),
+                              child:
+                                  GraphSvgProvider.instance.generate(_dotMDFA),
                             ),
                           ],
                         ),
