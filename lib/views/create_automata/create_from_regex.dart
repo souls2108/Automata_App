@@ -1,3 +1,5 @@
+import 'package:automata_app/services/automata/automata.dart';
+import 'package:automata_app/views/automata_view.dart';
 import 'package:flutter/material.dart';
 
 class CreateFromRegex extends StatefulWidget {
@@ -30,7 +32,14 @@ class _CreateFromRegexState extends State<CreateFromRegex> {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            //TODO: Implement handleButtonPress
+            //TODO: validate regex
+            final automata = Automata.fromRegex(_regex.text);
+            automata.generateDotText();
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AutomataView(automata: automata),
+              ),
+            );
           },
           child: const Text('Create Automata'),
         ),

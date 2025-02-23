@@ -6,7 +6,7 @@ class Automata {
   late final Map<String, dynamic> dotText;
 
   Automata.fromRegex(this.regex) {
-    AutomataService().createFromRegex(regex);
+    automataData = AutomataService().createFromRegex(regex);
   }
 
   Automata.fromDFAtable(
@@ -14,14 +14,20 @@ class Automata {
     List<Map<String, int?>> tableData,
     List<int> finalStates,
   ) {
-    AutomataService().createFromDFAtable(symbols, tableData, finalStates);
+    automataData =
+        AutomataService().createFromDFAtable(symbols, tableData, finalStates);
   }
 
   generateDotText() {
-    final dfa = dotText['dfa'];
-    final nfa = dotText['nfa'];
-    final mdfa = dotText['mdfa'];
+    final dfa = automataData['dfa'];
+    final nfa = automataData['nfa'];
+    final mdfa = automataData['mdfa'];
     dotText = AutomataService().generateDotText(dfa, nfa, mdfa);
+  }
+
+  bool equals(Automata other) {
+    return AutomataService()
+        .compareAutomata(automataData['mdfa'], other.automataData['mdfa']);
   }
 
   void dispose() {
