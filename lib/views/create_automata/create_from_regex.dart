@@ -1,5 +1,4 @@
 import 'package:automata_app/services/automata/automata.dart';
-import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
 import 'package:automata_app/views/automata_view.dart';
 import 'package:flutter/material.dart';
 

@@ -4,8 +4,6 @@ import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
 import 'package:automata_app/services/automata/automata_exceptions.dart';
 import 'package:ffi/ffi.dart';
 
-import 'dart:developer' as devtools show log;
-
 class AutomataService {
   static final AutomataService _instance = AutomataService._internal();
   static final _lib = AutomataLib().nativeLibrary;

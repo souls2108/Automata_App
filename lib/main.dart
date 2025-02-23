@@ -3,17 +3,11 @@ import 'dart:ffi';
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
 import 'package:automata_app/views/create_automata/create_automata_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:automata_app/plugin/ffi_plugin/automata_lib.dart';
 import 'package:ffi/ffi.dart';
 
-import 'dart:developer' as devtools show log;
-
-import 'package:flutter_svg/flutter_svg.dart';
-
 void main() {
   runApp(MaterialApp(
-    title: 'Flutter Demo',
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
       dataTableTheme: DataTableThemeData(
@@ -24,6 +18,7 @@ void main() {
     ),
     home: CreateAutomataView(),
   ));
+  GraphSvgProvider.instance;
 }
 
 class HomePage extends StatefulWidget {

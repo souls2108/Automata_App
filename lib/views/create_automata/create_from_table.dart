@@ -19,8 +19,6 @@ class _CreateFromTableState extends State<CreateFromTable> {
   final List<Map<String, int?>> _tableData = [];
   Set<String> _errorCells = {};
 
-  final double _cellWidth = 70;
-
   @override
   void initState() {
     _symbolController = TextEditingController();

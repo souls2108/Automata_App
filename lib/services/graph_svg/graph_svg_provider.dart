@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'dart:developer' as devtools show log;
 
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -21,10 +21,11 @@ class GraphSvgProvider {
   late InAppWebViewController _webViewController;
   String _svgData = '';
 
-  void _initializeWebView() {
+  Future<void> _initializeWebView() async {
     if (_isInitialized) return;
     _isInitialized = true;
-    devtools.log("Initializing Web View");
+    final htmlContent =
+        await PlatformAssetBundle().loadString('assets/viz.html');
 
     final headlessWebView = HeadlessInAppWebView(
       initialData: InAppWebViewInitialData(data: htmlContent),
@@ -32,20 +33,16 @@ class GraphSvgProvider {
         _webViewController = controller;
         _controllerCompleter.complete();
         _isInitialized = true;
-        devtools.log("Web View created");
       },
       onLoadStop: (controller, url) {
         controller.addJavaScriptHandler(
           handlerName: 'svgDataHandler',
           callback: (args) {
-            devtools.log("SVG Data received");
             _svgData = args[0];
           },
         );
       },
-      onReceivedError: (controller, request, error) {
-        devtools.log("Error loading web view: $error");
-      },
+      onReceivedError: (controller, request, error) {},
     );
 
     WidgetsFlutterBinding.ensureInitialized();
@@ -68,7 +65,6 @@ class GraphSvgProvider {
   }
 
   Future<Widget> generateGraphSVG(String dotString) async {
-    devtools.log("Generating graph...");
     await _controllerCompleter.future;
     try {
       String escapedDot =
@@ -76,7 +72,6 @@ class GraphSvgProvider {
       String jsCode = '''
         (function() {
           if (typeof Viz !== 'undefined') {
-            console.log("Executing Viz...");
             let viz = new Viz();
             viz.renderSVGElement("$escapedDot")
                 .then(function(element) {
@@ -95,20 +90,7 @@ class GraphSvgProvider {
       final svgWidget = SvgPicture.string(_svgData);
       return svgWidget;
     } catch (e) {
-      devtools.log("Error evaluating JavaScript: $e");
       return Text("Error: $e");
     }
   }
 }
-
-const htmlContent = '''
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
-</head>
-<body>
-</body>
-</html>
-''';
