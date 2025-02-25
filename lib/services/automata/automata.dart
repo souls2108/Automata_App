@@ -9,6 +9,12 @@ class Automata {
     automataData = AutomataService().createFromRegex(regex);
   }
 
+  Automata.fromAutomata(Automata other) {
+    regex = other.regex;
+    automataData = Map<String, dynamic>.from(other.automataData);
+    dotText = Map<String, dynamic>.from(other.dotText);
+  }
+
   Automata.fromDFAtable(
     Set<String> symbols,
     List<Map<String, int?>> tableData,

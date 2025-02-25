@@ -1,6 +1,6 @@
 [
 {
-  "directory": "/home/souls/experiments/flutter/automata_app/android/app/.cxx/Debug/3p604l1x/x86_64",
+  "directory": "/home/souls/experiments/flutter/automata_app/android/app/.cxx/Debug/31o6469j/x86_64",
   "command": "/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=x86_64-none-linux-android21 --sysroot=/home/souls/Android/Sdk/ndk/28.0.12916984/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dautomata_lib_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC -o CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o -c /home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/automata_lib/automata_lib_interface.cpp",
   "file": "/home/souls/experiments/flutter/automata_app/android/app/src/main/cpp/automata_lib/automata_lib_interface.cpp",
   "output": "CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o"

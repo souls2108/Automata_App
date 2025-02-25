@@ -1,6 +1,6 @@
 import 'package:automata_app/services/automata/automata.dart';
 import 'package:automata_app/services/automata/automata_exceptions.dart';
-import 'package:automata_app/views/automata_view.dart';
+import 'package:automata_app/views/view_automata/automata_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 

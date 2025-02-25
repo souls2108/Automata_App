@@ -1,6 +1,10 @@
+import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
+import 'package:automata_app/views/automata_operations.dart';
 import 'package:automata_app/views/create_automata/create_automata_view.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,16 +16,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        dataTableTheme: DataTableThemeData(
-          dataRowMaxHeight: 50.0,
-          dataRowMinHeight: 50.0,
-          headingRowAlignment: MainAxisAlignment.center,
+    return ChangeNotifierProvider(
+      create: (context) => AutomataProvider(),
+      child: MaterialApp(
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+          fontFamily: GoogleFonts.ubuntu().fontFamily,
+          dataTableTheme: DataTableThemeData(
+            dataRowMaxHeight: 50.0,
+            dataRowMinHeight: 50.0,
+            headingRowAlignment: MainAxisAlignment.center,
+          ),
         ),
+        home: HomePage(),
       ),
-      home: HomePage(),
     );
   }
 }
@@ -74,7 +82,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              // SizedBox(height: 20),
               SizedBox(
                 height: 150,
                 child: ElevatedButton(
@@ -87,14 +94,20 @@ class _HomePageState extends State<HomePage> {
                       vertical: 15,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AutomataOperations(),
+                      ),
+                    );
+                  },
                   child: const Text(
                     'Operations',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),
-              // SizedBox(height: 20),
               SizedBox(
                 height: 150,
                 child: ElevatedButton(
@@ -114,7 +127,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              // SizedBox(height: 20),
             ],
           ),
         ),
