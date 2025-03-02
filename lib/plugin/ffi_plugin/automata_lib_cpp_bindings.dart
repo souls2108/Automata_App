@@ -108,6 +108,85 @@ class AutomataLibCpp {
   late final _NFA_generateDotText = _NFA_generateDotTextPtr.asFunction<
       ffi.Pointer<ffi.Char> Function(ffi.Pointer<NFA>)>();
 
+  ffi.Pointer<NFA> NFA_unionNFA(
+    ffi.Pointer<NFA> instance,
+    ffi.Pointer<NFA> otherInstance,
+  ) {
+    return _NFA_unionNFA(
+      instance,
+      otherInstance,
+    );
+  }
+
+  late final _NFA_unionNFAPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<NFA> Function(
+              ffi.Pointer<NFA>, ffi.Pointer<NFA>)>>('NFA_unionNFA');
+  late final _NFA_unionNFA = _NFA_unionNFAPtr.asFunction<
+      ffi.Pointer<NFA> Function(ffi.Pointer<NFA>, ffi.Pointer<NFA>)>();
+
+  ffi.Pointer<NFA> NFA_intersection(
+    ffi.Pointer<NFA> instance,
+    ffi.Pointer<NFA> otherInstance,
+  ) {
+    return _NFA_intersection(
+      instance,
+      otherInstance,
+    );
+  }
+
+  late final _NFA_intersectionPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<NFA> Function(
+              ffi.Pointer<NFA>, ffi.Pointer<NFA>)>>('NFA_intersection');
+  late final _NFA_intersection = _NFA_intersectionPtr.asFunction<
+      ffi.Pointer<NFA> Function(ffi.Pointer<NFA>, ffi.Pointer<NFA>)>();
+
+  ffi.Pointer<NFA> NFA_complement(
+    ffi.Pointer<NFA> instance,
+  ) {
+    return _NFA_complement(
+      instance,
+    );
+  }
+
+  late final _NFA_complementPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<NFA> Function(ffi.Pointer<NFA>)>>(
+          'NFA_complement');
+  late final _NFA_complement = _NFA_complementPtr.asFunction<
+      ffi.Pointer<NFA> Function(ffi.Pointer<NFA>)>();
+
+  ffi.Pointer<NFA> NFA_concat(
+    ffi.Pointer<NFA> instance,
+    ffi.Pointer<NFA> otherInstance,
+  ) {
+    return _NFA_concat(
+      instance,
+      otherInstance,
+    );
+  }
+
+  late final _NFA_concatPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<NFA> Function(
+              ffi.Pointer<NFA>, ffi.Pointer<NFA>)>>('NFA_concat');
+  late final _NFA_concat = _NFA_concatPtr.asFunction<
+      ffi.Pointer<NFA> Function(ffi.Pointer<NFA>, ffi.Pointer<NFA>)>();
+
+  ffi.Pointer<NFA> NFA_reverseNFA(
+    ffi.Pointer<NFA> instance,
+  ) {
+    return _NFA_reverseNFA(
+      instance,
+    );
+  }
+
+  late final _NFA_reverseNFAPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<NFA> Function(ffi.Pointer<NFA>)>>(
+          'NFA_reverseNFA');
+  late final _NFA_reverseNFA = _NFA_reverseNFAPtr.asFunction<
+      ffi.Pointer<NFA> Function(ffi.Pointer<NFA>)>();
+
   /// DFA class Definition
   ffi.Pointer<DFA> DFA_create_instance(
     ffi.Pointer<ffi.Char> reg,
@@ -155,6 +234,20 @@ class AutomataLibCpp {
           ffi.Pointer<DFA> Function(ffi.Pointer<ffi.Char>, int,
               ffi.Pointer<ffi.Int>, int, ffi.Pointer<ffi.Int>, int)>();
 
+  ffi.Pointer<DFA> DFA_create_instance_from_NFA(
+    ffi.Pointer<NFA> nfa,
+  ) {
+    return _DFA_create_instance_from_NFA(
+      nfa,
+    );
+  }
+
+  late final _DFA_create_instance_from_NFAPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<DFA> Function(ffi.Pointer<NFA>)>>(
+          'DFA_create_instance_from_NFA');
+  late final _DFA_create_instance_from_NFA = _DFA_create_instance_from_NFAPtr
+      .asFunction<ffi.Pointer<DFA> Function(ffi.Pointer<NFA>)>();
+
   void DFA_destroy_instance(
     ffi.Pointer<DFA> instance,
   ) {
@@ -169,19 +262,96 @@ class AutomataLibCpp {
   late final _DFA_destroy_instance =
       _DFA_destroy_instancePtr.asFunction<void Function(ffi.Pointer<DFA>)>();
 
-  ffi.Pointer<ffi.Char> DFA_generateDotText(
+  int DFA_getStateNgb(
+    ffi.Pointer<DFA> instance,
+    int ind,
+    int sym,
+  ) {
+    return _DFA_getStateNgb(
+      instance,
+      ind,
+      sym,
+    );
+  }
+
+  late final _DFA_getStateNgbPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<DFA>, ffi.Int, ffi.Char)>>('DFA_getStateNgb');
+  late final _DFA_getStateNgb = _DFA_getStateNgbPtr.asFunction<
+      int Function(ffi.Pointer<DFA>, int, int)>();
+
+  ffi.Pointer<ffi.Char> DFA_getSymbols(
     ffi.Pointer<DFA> instance,
   ) {
-    return _DFA_generateDotText(
+    return _DFA_getSymbols(
       instance,
     );
   }
 
-  late final _DFA_generateDotTextPtr = _lookup<
+  late final _DFA_getSymbolsPtr = _lookup<
           ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>>(
-      'DFA_generateDotText');
-  late final _DFA_generateDotText = _DFA_generateDotTextPtr.asFunction<
+      'DFA_getSymbols');
+  late final _DFA_getSymbols = _DFA_getSymbolsPtr.asFunction<
       ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>();
+
+  int DFA_isMinimal(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_isMinimal(
+      instance,
+    );
+  }
+
+  late final _DFA_isMinimalPtr =
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<DFA>)>>(
+          'DFA_isMinimal');
+  late final _DFA_isMinimal =
+      _DFA_isMinimalPtr.asFunction<int Function(ffi.Pointer<DFA>)>();
+
+  int DFA_isFinalState(
+    ffi.Pointer<DFA> instance,
+    int ind,
+  ) {
+    return _DFA_isFinalState(
+      instance,
+      ind,
+    );
+  }
+
+  late final _DFA_isFinalStatePtr =
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<DFA>, ffi.Int)>>(
+          'DFA_isFinalState');
+  late final _DFA_isFinalState =
+      _DFA_isFinalStatePtr.asFunction<int Function(ffi.Pointer<DFA>, int)>();
+
+  int DFA_stateCount(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_stateCount(
+      instance,
+    );
+  }
+
+  late final _DFA_stateCountPtr =
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<DFA>)>>(
+          'DFA_stateCount');
+  late final _DFA_stateCount =
+      _DFA_stateCountPtr.asFunction<int Function(ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<ffi.Int> DFA_getDeadStates(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_getDeadStates(
+      instance,
+    );
+  }
+
+  late final _DFA_getDeadStatesPtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.Int> Function(ffi.Pointer<DFA>)>>(
+      'DFA_getDeadStates');
+  late final _DFA_getDeadStates = _DFA_getDeadStatesPtr.asFunction<
+      ffi.Pointer<ffi.Int> Function(ffi.Pointer<DFA>)>();
 
   int DFA_test(
     ffi.Pointer<DFA> instance,
@@ -199,51 +369,6 @@ class AutomataLibCpp {
               ffi.Pointer<DFA>, ffi.Pointer<ffi.Char>)>>('DFA_test');
   late final _DFA_test = _DFA_testPtr.asFunction<
       int Function(ffi.Pointer<DFA>, ffi.Pointer<ffi.Char>)>();
-
-  ffi.Pointer<DFA> DFA_minimalDFA(
-    ffi.Pointer<DFA> instance,
-  ) {
-    return _DFA_minimalDFA(
-      instance,
-    );
-  }
-
-  late final _DFA_minimalDFAPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>>(
-          'DFA_minimalDFA');
-  late final _DFA_minimalDFA = _DFA_minimalDFAPtr.asFunction<
-      ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>();
-
-  int DFA_isMinimal(
-    ffi.Pointer<DFA> instance,
-  ) {
-    return _DFA_isMinimal(
-      instance,
-    );
-  }
-
-  late final _DFA_isMinimalPtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<DFA>)>>(
-          'DFA_isMinimal');
-  late final _DFA_isMinimal =
-      _DFA_isMinimalPtr.asFunction<int Function(ffi.Pointer<DFA>)>();
-
-  int DFA_equalsDFA(
-    ffi.Pointer<DFA> instance,
-    ffi.Pointer<DFA> other,
-  ) {
-    return _DFA_equalsDFA(
-      instance,
-      other,
-    );
-  }
-
-  late final _DFA_equalsDFAPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Int Function(
-              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_equalsDFA');
-  late final _DFA_equalsDFA = _DFA_equalsDFAPtr.asFunction<
-      int Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
 
   ffi.Pointer<ffi.Char> DFA_getDiffString(
     ffi.Pointer<DFA> instance,
@@ -264,6 +389,130 @@ class AutomataLibCpp {
   late final _DFA_getDiffString = _DFA_getDiffStringPtr.asFunction<
       ffi.Pointer<ffi.Char> Function(
           ffi.Pointer<DFA>, ffi.Pointer<DFA>, int)>();
+
+  ffi.Pointer<DFA> DFA_minimalDFA(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_minimalDFA(
+      instance,
+    );
+  }
+
+  late final _DFA_minimalDFAPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>>(
+          'DFA_minimalDFA');
+  late final _DFA_minimalDFA = _DFA_minimalDFAPtr.asFunction<
+      ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<DFA> DFA_unionDFA(
+    ffi.Pointer<DFA> instance,
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_unionDFA(
+      instance,
+      other,
+    );
+  }
+
+  late final _DFA_unionDFAPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<DFA> Function(
+              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_unionDFA');
+  late final _DFA_unionDFA = _DFA_unionDFAPtr.asFunction<
+      ffi.Pointer<DFA> Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<DFA> DFA_intersection(
+    ffi.Pointer<DFA> instance,
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_intersection(
+      instance,
+      other,
+    );
+  }
+
+  late final _DFA_intersectionPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<DFA> Function(
+              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_intersection');
+  late final _DFA_intersection = _DFA_intersectionPtr.asFunction<
+      ffi.Pointer<DFA> Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<DFA> DFA_complement(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_complement(
+      instance,
+    );
+  }
+
+  late final _DFA_complementPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>>(
+          'DFA_complement');
+  late final _DFA_complement = _DFA_complementPtr.asFunction<
+      ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<DFA> DFA_concat(
+    ffi.Pointer<DFA> instance,
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_concat(
+      instance,
+      other,
+    );
+  }
+
+  late final _DFA_concatPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<DFA> Function(
+              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_concat');
+  late final _DFA_concat = _DFA_concatPtr.asFunction<
+      ffi.Pointer<DFA> Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<DFA> DFA_reverse(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_reverse(
+      instance,
+    );
+  }
+
+  late final _DFA_reversePtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>>(
+          'DFA_reverse');
+  late final _DFA_reverse =
+      _DFA_reversePtr.asFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>();
+
+  int DFA_equalsDFA(
+    ffi.Pointer<DFA> instance,
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_equalsDFA(
+      instance,
+      other,
+    );
+  }
+
+  late final _DFA_equalsDFAPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_equalsDFA');
+  late final _DFA_equalsDFA = _DFA_equalsDFAPtr.asFunction<
+      int Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
+
+  ffi.Pointer<ffi.Char> DFA_generateDotText(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_generateDotText(
+      instance,
+    );
+  }
+
+  late final _DFA_generateDotTextPtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>>(
+      'DFA_generateDotText');
+  late final _DFA_generateDotText = _DFA_generateDotTextPtr.asFunction<
+      ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>();
 
   ffi.Pointer<ffi.Char> DFA_getDFAText(
     ffi.Pointer<DFA> instance,

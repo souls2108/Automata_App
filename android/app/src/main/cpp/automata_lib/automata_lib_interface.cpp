@@ -1,15 +1,12 @@
 #include "./automata_lib.h"
-#include "./automata_lib.cpp"
+#include "./lib/main.cpp"
 #include <cstring> // for c_str, strdup
 
 
-extern "C" 
-{
-
 // ParseTree class
 ParseTree* ParseTree_create_instance(const char* reg) {
-    string reg_str(reg);
-    return new ParseTree(reg_str);
+    string regStr(reg);
+    return new ParseTree(regStr);
 }
 
 void ParseTree_destroy_instance(ParseTree* instance) {
@@ -17,14 +14,17 @@ void ParseTree_destroy_instance(ParseTree* instance) {
 }
 
 const char* ParseTree_generateDotText(ParseTree* instance) {
-    string dot_text = instance->generateDotString();
-    return strdup(dot_text.c_str());
+    return strdup(instance->generateDotString().c_str());
 }
 
 // NFA class
 NFA* NFA_create_instance(const char* reg) {
-    string reg_str(reg);
-    return new NFA(reg_str);
+    string regStr(reg);
+    return new NFA(regStr);
+}
+
+NFA* NFA_create_instance_from_DFA(DFA* dfa, int removeDeadStates) {
+    return new NFA(*dfa, removeDeadStates);
 }
 
 void NFA_destroy_instance(NFA* instance) {
@@ -32,14 +32,29 @@ void NFA_destroy_instance(NFA* instance) {
 }
 
 const char* NFA_generateDotText(NFA* instance) {
-    string dot_text = instance->generateDotString();
-    return strdup(dot_text.c_str());
+    return strdup(instance->generateDotString().c_str());
+}
+
+NFA* NFA_unionNFA(const NFA* instance, const NFA* otherInstance) {
+    return new NFA(instance->unionNFA(*otherInstance));
+}
+NFA* NFA_intersection(const NFA* instance, const NFA* otherInstance) {
+    return new NFA(instance->intersection(*otherInstance));
+}
+NFA* NFA_complement(const NFA* instance) {
+    return new NFA(instance->complement());
+}
+NFA* NFA_concat(const NFA* instance, const NFA* otherInstance) {
+    return new NFA(instance->concat(*otherInstance));
+}
+NFA* NFA_reverseNFA(const NFA* instance) {
+    return new NFA(instance->reverseNFA());
 }
 
 // DFA class
 DFA* DFA_create_instance(const char* reg) {
-    string reg_str(reg);
-    return new DFA(reg_str);
+    string regStr(reg);
+    return new DFA(regStr);
 }
 
 DFA* DFA_create_instance_from_data(char* symbols, int symbols_size, int* table, int table_size, int* final_states, int final_states_size) {
@@ -53,46 +68,90 @@ DFA* DFA_create_instance_from_data(char* symbols, int symbols_size, int* table, 
     return new DFA(_symbols, _table, _final_states);
 }
 
+DFA* DFA_create_instance_from_NFA(NFA* nfa) {
+    return new DFA(*nfa);
+}
+
 void DFA_destroy_instance(DFA* instance) {
     delete instance;
 }
 
-const char* DFA_generateDotText(DFA* instance) {
-    string dot_text = instance->generateDotString();
-    return strdup(dot_text.c_str());
+int DFA_getStateNgb(DFA* instance, int ind, char sym) {
+    return instance->getStateNgb(ind, sym);
 }
 
-int DFA_test(DFA* instance, const char* str) {
-    return instance->test(string(str));
-}
-
-DFA* DFA_minimalDFA(DFA* instance) {
-    DFA* mDFA = new DFA(instance->minimal());
-    return  mDFA;
+const char* DFA_getSymbols(DFA* instance) {
+    string symbols = "";
+    for(const char& sym : instance->getSymbols()) {
+        symbols += sym;
+    }
+    return strdup(symbols.c_str());
 }
 
 int DFA_isMinimal(DFA* instance) {
     return instance->isMinimal();
 }
 
+int DFA_isFinalState(DFA* instance, int ind) {
+    return instance->isFinalState(ind);
+}
+
+int DFA_stateCount(DFA* instance) {
+    return instance->stateCount();
+}
+
+int* DFA_getDeadStates(DFA* instance) {
+    vector<int> deadStates = instance->getDeadStates();
+    int* deadStatesArr = new int[deadStates.size()];
+    for(int i=0; i<deadStates.size(); i++) {
+        deadStatesArr[i] = deadStates[i];
+    }
+    return deadStatesArr;
+}
+
+
+int DFA_test(DFA* instance, const char* str) {
+    return instance->test(string(str));
+}
+
+const char* DFA_getDiffString(DFA* instance, DFA* other, int max_depth) {
+    return strdup(instance->getDiffString(*other).c_str());
+}
+
+
+DFA* DFA_minimalDFA(DFA* instance) {
+    return new DFA(instance->minimal());
+}
+
+DFA* DFA_unionDFA(DFA* instance, DFA* other) {
+    return new DFA(instance->unionDFA(*other));
+}
+
+DFA* DFA_intersection(DFA* instance, DFA* other) {
+    return new DFA(instance->intersection(*other));
+}
+
+DFA* DFA_complement(DFA* instance) {
+    return new DFA(instance->complement());
+}
+
+DFA* DFA_concat(DFA* instance, DFA* other) {
+    return new DFA(instance->concat(*other));
+}
+
+DFA* DFA_reverse(DFA* instance) {
+    return new DFA(instance->reverse());
+}
+
 int DFA_equalsDFA(DFA* instance, DFA* other) {
     return *instance == *other;
 }
 
-const char* DFA_getDiffString(DFA* instance, DFA* other, int max_depth) {
-    string diff = instance->getDiffString(*other, max_depth);
-    return strdup(diff.c_str());
-}
 
 const char* DFA_getDFAText(DFA* instance) {
-    string text = instance->generateTextString();
-    return strdup(text.c_str());
+    return strdup(instance->generateTextString().c_str());
 }
 
-// Utility functions
-
-void delete_text(const char* text) {
-    free((void*)text);
+const char* DFA_generateDotText(DFA* instance) {
+    return strdup(instance->generateDotString().c_str());
 }
-
-} // extern "C"

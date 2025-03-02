@@ -1,3 +1,9 @@
 # ninja log v5
 0	2303	1740380048289634033	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	3e47a8fd39dc452d
 2304	2408	1740380048415350838	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so	465bfb10ee7b4f4b
+8	3713	1740938752290593724	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	3e47a8fd39dc452d
+3713	3836	1740938752444736597	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so	465bfb10ee7b4f4b
+2	2734	1740939671129963268	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	3e47a8fd39dc452d
+2734	2891	1740939671345681715	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so	465bfb10ee7b4f4b
+5	2619	1740941172809569028	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	3e47a8fd39dc452d
+2619	2760	1740941172994383262	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86_64/libautomata_lib.so	465bfb10ee7b4f4b
