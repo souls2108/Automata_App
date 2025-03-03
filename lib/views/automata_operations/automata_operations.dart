@@ -84,39 +84,25 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                     initialChildSize: 0.1,
                     minChildSize: 0.1,
                     builder: (context, scrollController) {
-                      return ListView(
-                        controller: scrollController,
-                        children: [
-                          ...automatas.map((automata) {
+                      return Container(
+                        color: Colors.white,
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: automatas.length,
+                          itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(automatas.name),
+                              title: Text(automataNames.elementAt(index)),
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => AutomataView(
-                                    automata: automata,
+                                    automata: automatas.elementAt(index),
                                   ),
                                 ));
                               },
-                            )
-                          })
-                        ],
+                            );
+                          },
+                        ),
                       );
-                      // return ListView.builder(
-                      //   itemCount: automataNames.length,
-                      //   itemBuilder: (context, index) {
-                      //     return ListTile(
-                      //       title: Text(automataNames.elementAt(index)),
-                      //       onTap: () {
-                      //         Navigator.of(context).push(MaterialPageRoute(
-                      //           builder: (context) => AutomataView(
-                      //             automata:
-                      //                 providerAutomata.automatas.elementAt(index),
-                      //           ),
-                      //         ));
-                      //       },
-                      //     );
-                      //   },
-                      // );
                     }),
               ])),
         ],
