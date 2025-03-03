@@ -1,6 +1,6 @@
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
-import 'package:automata_app/views/automata_operations.dart';
+import 'package:automata_app/views/automata_operations/automata_operations.dart';
 import 'package:automata_app/views/create_automata/create_automata_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,14 +20,25 @@ class MyApp extends StatelessWidget {
       create: (context) => AutomataProvider(),
       child: MaterialApp(
         theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
-          fontFamily: GoogleFonts.ubuntu().fontFamily,
-          dataTableTheme: DataTableThemeData(
-            dataRowMaxHeight: 50.0,
-            dataRowMinHeight: 50.0,
-            headingRowAlignment: MainAxisAlignment.center,
-          ),
-        ),
+            primarySwatch: Colors.deepPurple,
+            fontFamily: GoogleFonts.ubuntu().fontFamily,
+            dataTableTheme: DataTableThemeData(
+              dataRowMaxHeight: 50.0,
+              dataRowMinHeight: 50.0,
+              headingRowAlignment: MainAxisAlignment.center,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
+                textStyle: TextStyle(fontSize: 20),
+              ),
+            )),
         home: HomePage(),
       ),
     );
@@ -59,15 +70,6 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 150,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 15,
-                    ),
-                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -78,22 +80,12 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: const Text(
                     'Create Automata',
-                    style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),
               SizedBox(
                 height: 150,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 15,
-                    ),
-                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -104,26 +96,15 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: const Text(
                     'Operations',
-                    style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),
               SizedBox(
                 height: 150,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 15,
-                    ),
-                  ),
                   onPressed: () {},
                   child: const Text(
                     'AI assistant',
-                    style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),

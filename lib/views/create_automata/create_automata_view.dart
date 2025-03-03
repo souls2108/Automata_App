@@ -24,24 +24,14 @@ class _CreateAutomataViewState extends State<CreateAutomataView> {
         children: [
           const SizedBox(height: 20),
           SizedBox(
-            height: 30,
+            height: 40,
             width: min(MediaQuery.of(context).size.width * 0.9, 500),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isRegexInput
-                        ? Theme.of(context).primaryColorDark
-                        : Theme.of(context).primaryColorLight,
-                    foregroundColor: isRegexInput
-                        ? Theme.of(context).scaffoldBackgroundColor
-                        : Theme.of(context).primaryColorDark,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
+                TextButton(
+                  style: resolveButtonStyle(context, isRegexInput),
                   onPressed: () {
                     setState(() {
                       isRegexInput = true;
@@ -49,18 +39,8 @@ class _CreateAutomataViewState extends State<CreateAutomataView> {
                   },
                   child: const Text('Create from regex'),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isRegexInput
-                        ? Theme.of(context).primaryColorLight
-                        : Theme.of(context).primaryColorDark,
-                    foregroundColor: isRegexInput
-                        ? Theme.of(context).primaryColorDark
-                        : Theme.of(context).scaffoldBackgroundColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
+                TextButton(
+                  style: resolveButtonStyle(context, !isRegexInput),
                   onPressed: () {
                     setState(() {
                       isRegexInput = false;
@@ -92,5 +72,32 @@ class _CreateAutomataViewState extends State<CreateAutomataView> {
         ],
       ),
     );
+  }
+
+  Color resolveForgroundColor(BuildContext context, bool isActive) {
+    return isActive
+        ? Theme.of(context).scaffoldBackgroundColor
+        : Theme.of(context).primaryColorDark;
+  }
+
+  Color resolveBackgroundColor(BuildContext context, bool isActive) {
+    return isActive
+        ? Theme.of(context).primaryColorDark
+        : Theme.of(context).primaryColorLight;
+  }
+
+  ButtonStyle resolveButtonStyle(BuildContext context, bool isActive) {
+    return ButtonStyle(
+        backgroundColor: WidgetStateColor.resolveWith(
+          (widgetState) => resolveBackgroundColor(context, isActive),
+        ),
+        foregroundColor: WidgetStateColor.resolveWith(
+          (widgetState) => resolveForgroundColor(context, isActive),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+        ));
   }
 }
