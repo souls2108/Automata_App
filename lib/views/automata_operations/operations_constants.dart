@@ -4,4 +4,7 @@ enum OperationButtons {
   complement,
   reverse,
   concat,
+  regex,
 }
+
+class UnintializedAutomata {}
