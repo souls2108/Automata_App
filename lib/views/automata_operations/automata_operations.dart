@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/automata/automata.dart';
 import 'package:automata_app/views/automata_operations/operations_constants.dart';
@@ -38,23 +36,35 @@ class _AutomataOperationsState extends State<AutomataOperations> {
         title: const Text('Automata Operations'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              if (_expression.isNotEmpty)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 5,
-                    children: _buildExpression(),
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  height: 90,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    color: Colors.grey.shade200,
+                  ),
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 5,
+                      children: _buildExpression(),
+                    ),
                   ),
                 ),
-              ElevatedButton(onPressed: () {}, child: const Text('Evaluate')),
-            ],
-          )),
+                ElevatedButton(onPressed: () {}, child: const Text('Evaluate')),
+              ],
+            ),
+          ),
           SizedBox(
               height: MediaQuery.of(context).size.height * 0.4,
               child: Stack(children: [
@@ -111,26 +121,7 @@ class _AutomataOperationsState extends State<AutomataOperations> {
   }
 
   void _onOperationButtonPressed(OperationButtons operation) {
-    switch (operation) {
-      case OperationButtons.union:
-        _expression.add(operation);
-        break;
-      case OperationButtons.intersection:
-        _expression.add(operation);
-        break;
-      case OperationButtons.complement:
-        _expression.add(operation);
-        break;
-      case OperationButtons.reverse:
-        _expression.add(operation);
-        break;
-      case OperationButtons.concat:
-        _expression.add(operation);
-        break;
-      case OperationButtons.regex:
-        _expression.add(operation);
-        break;
-    }
+    _expression.add(operation);
     devtools.log("Operation: $operation");
     setState(() {});
   }
@@ -153,6 +144,72 @@ class _AutomataOperationsState extends State<AutomataOperations> {
   }
 
   Automata evaluateExpression() {
+    List postfix = [];
+    List<OperationButtons> stack = [];
+    for (var item in _expression) {
+      if (item is Automata) {
+        postfix.add(item);
+      } else if (item is OperationButtons) {
+        while (stack.isNotEmpty &&
+            getPrecedence(stack.last) >= getPrecedence(item)) {
+          postfix.add(stack.removeLast());
+        }
+        stack.add(item);
+      }
+    }
+
+    while (stack.isNotEmpty) {
+      postfix.add(stack.removeLast());
+    }
+
+    List<Automata> automataStack = [];
+    for (var item in postfix) {
+      if (item is Automata) {
+        automataStack.add(item);
+      } else if (item is OperationButtons) {
+        switch (item) {
+          case OperationButtons.union:
+            {
+              var a = automataStack.removeLast();
+              var b = automataStack.removeLast();
+              automataStack.add(a.union(b));
+            }
+            break;
+          case OperationButtons.intersection:
+            {
+              var a = automataStack.removeLast();
+              var b = automataStack.removeLast();
+              automataStack.add(a.intersection(b));
+            }
+            break;
+          case OperationButtons.concat:
+            {
+              var a = automataStack.removeLast();
+              var b = automataStack.removeLast();
+              automataStack.add(a.concat(b));
+            }
+            break;
+          case OperationButtons.reverse:
+            {
+              var a = automataStack.removeLast();
+              automataStack.add(a.reverse());
+            }
+            break;
+          case OperationButtons.complement:
+            {
+              var a = automataStack.removeLast();
+              automataStack.add(a.complement());
+            }
+            break;
+          case OperationButtons.open:
+          case OperationButtons.close:
+            break;
+        }
+      }
+    }
+
+    devtools.log(postfix.toString());
+
     return Automata.fromRegex("a");
   }
 }

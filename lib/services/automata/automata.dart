@@ -24,6 +24,8 @@ class Automata {
         AutomataService().createFromDFAtable(symbols, tableData, finalStates);
   }
 
+  Automata._fromDFA() {}
+
   generateDotText() {
     final dfa = automataData['dfa'];
     final nfa = automataData['nfa'];
@@ -42,4 +44,6 @@ class Automata {
     final mdfa = automataData['mdfa'];
     AutomataService().freeInstance(dfa, nfa, mdfa);
   }
+
+  Automata union(Automata other) {}
 }

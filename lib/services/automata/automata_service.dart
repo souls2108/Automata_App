@@ -96,6 +96,11 @@ class AutomataService {
     };
   }
 
+  _createFromDFA(dfaInstance) {
+    final mdfa = _lib.DFA_minimalDFA(dfaInstance);
+    final nfa = _lib.NFA
+  }
+
   freeInstance(dfaInstance, nfaInstance, mdfaInstance) {
     if (dfaInstance != nullptr) _lib.DFA_destroy_instance(dfaInstance);
     if (nfaInstance != nullptr) _lib.NFA_destroy_instance(nfaInstance);
@@ -133,4 +138,5 @@ class AutomataService {
   compareAutomata(mdfaInstance, other) {
     return _lib.DFA_equalsDFA(mdfaInstance, other);
   }
+
 }
