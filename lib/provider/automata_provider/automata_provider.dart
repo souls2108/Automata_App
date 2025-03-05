@@ -17,6 +17,7 @@ class AutomataProvider with ChangeNotifier {
   }
 
   void remove(Automata automata) {
+    automata.dispose();
     _automataMemory.remove(automata);
     notifyListeners();
   }

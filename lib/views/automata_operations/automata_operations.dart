@@ -143,75 +143,75 @@ class _AutomataOperationsState extends State<AutomataOperations> {
     return res;
   }
 
-  Automata evaluateExpression() {
-    List postfix = [];
-    List<OperationButtons> stack = [];
-    for (var item in _expression) {
-      if (item is Automata) {
-        postfix.add(item);
-      } else if (item is OperationButtons) {
-        while (stack.isNotEmpty &&
-            getPrecedence(stack.last) >= getPrecedence(item)) {
-          postfix.add(stack.removeLast());
-        }
-        stack.add(item);
-      }
-    }
+  // Automata evaluateExpression() {
+  //   List postfix = [];
+  //   List<OperationButtons> stack = [];
+  //   for (var item in _expression) {
+  //     if (item is Automata) {
+  //       postfix.add(item);
+  //     } else if (item is OperationButtons) {
+  //       while (stack.isNotEmpty &&
+  //           getPrecedence(stack.last) >= getPrecedence(item)) {
+  //         postfix.add(stack.removeLast());
+  //       }
+  //       stack.add(item);
+  //     }
+  //   }
 
-    while (stack.isNotEmpty) {
-      postfix.add(stack.removeLast());
-    }
+  //   while (stack.isNotEmpty) {
+  //     postfix.add(stack.removeLast());
+  //   }
 
-    List<Automata> automataStack = [];
-    for (var item in postfix) {
-      if (item is Automata) {
-        automataStack.add(item);
-      } else if (item is OperationButtons) {
-        switch (item) {
-          case OperationButtons.union:
-            {
-              var a = automataStack.removeLast();
-              var b = automataStack.removeLast();
-              automataStack.add(a.union(b));
-            }
-            break;
-          case OperationButtons.intersection:
-            {
-              var a = automataStack.removeLast();
-              var b = automataStack.removeLast();
-              automataStack.add(a.intersection(b));
-            }
-            break;
-          case OperationButtons.concat:
-            {
-              var a = automataStack.removeLast();
-              var b = automataStack.removeLast();
-              automataStack.add(a.concat(b));
-            }
-            break;
-          case OperationButtons.reverse:
-            {
-              var a = automataStack.removeLast();
-              automataStack.add(a.reverse());
-            }
-            break;
-          case OperationButtons.complement:
-            {
-              var a = automataStack.removeLast();
-              automataStack.add(a.complement());
-            }
-            break;
-          case OperationButtons.open:
-          case OperationButtons.close:
-            break;
-        }
-      }
-    }
+  //   List<Automata> automataStack = [];
+  //   for (var item in postfix) {
+  //     if (item is Automata) {
+  //       automataStack.add(item);
+  //     } else if (item is OperationButtons) {
+  //       switch (item) {
+  //         case OperationButtons.union:
+  //           {
+  //             var a = automataStack.removeLast();
+  //             var b = automataStack.removeLast();
+  //             automataStack.add(a.union(b));
+  //           }
+  //           break;
+  //         case OperationButtons.intersection:
+  //           {
+  //             var a = automataStack.removeLast();
+  //             var b = automataStack.removeLast();
+  //             automataStack.add(a.intersection(b));
+  //           }
+  //           break;
+  //         case OperationButtons.concat:
+  //           {
+  //             var a = automataStack.removeLast();
+  //             var b = automataStack.removeLast();
+  //             automataStack.add(a.concat(b));
+  //           }
+  //           break;
+  //         case OperationButtons.reverse:
+  //           {
+  //             var a = automataStack.removeLast();
+  //             automataStack.add(a.reverse());
+  //           }
+  //           break;
+  //         case OperationButtons.complement:
+  //           {
+  //             var a = automataStack.removeLast();
+  //             automataStack.add(a.complement());
+  //           }
+  //           break;
+  //         case OperationButtons.open:
+  //         case OperationButtons.close:
+  //           break;
+  //       }
+  //     }
+  //   }
 
-    devtools.log(postfix.toString());
+  //   devtools.log(postfix.toString());
 
-    return Automata.fromRegex("a");
-  }
+  //   return Automata.fromRegex("a");
+  // }
 }
 
 class ExpressionItemTile extends StatelessWidget {

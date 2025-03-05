@@ -23,6 +23,10 @@ NFA* NFA_create_instance(const char* reg) {
     return new NFA(regStr);
 }
 
+NFA* NFA_create_instance_from_NFA(NFA* other) {
+    return new NFA(*other);
+}
+
 NFA* NFA_create_instance_from_DFA(DFA* dfa, int removeDeadStates) {
     return new NFA(*dfa, removeDeadStates);
 }
@@ -66,6 +70,10 @@ DFA* DFA_create_instance_from_data(char* symbols, int symbols_size, int* table, 
     }
     vector<int> _final_states(final_states, final_states + final_states_size);
     return new DFA(_symbols, _table, _final_states);
+}
+
+DFA* DFA_create_instance_from_DFA(DFA* other) {
+    return new DFA(*other);
 }
 
 DFA* DFA_create_instance_from_NFA(NFA* nfa) {

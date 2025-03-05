@@ -97,8 +97,25 @@ class AutomataService {
   }
 
   _createFromDFA(dfaInstance) {
+    final dfa = _lib.DFA_create_instance_from_DFA(dfaInstance);
     final mdfa = _lib.DFA_minimalDFA(dfaInstance);
-    final nfa = _lib.NFA
+    final nfa = _lib.NFA_create_instance_from_DFA(dfaInstance, 1);
+    return {
+      'nfa': nfa,
+      'dfa': dfa,
+      'mdfa': mdfa,
+    };
+  }
+
+  _createFromNFA(nfaInstance) {
+    final nfa = _lib.NFA_create_instance_from_NFA(nfaInstance);
+    final dfa = _lib.DFA_create_instance_from_NFA(nfaInstance);
+    final mdfa = _lib.DFA_minimalDFA(dfa);
+    return {
+      'nfa': nfa,
+      'dfa': dfa,
+      'mdfa': mdfa,
+    };
   }
 
   freeInstance(dfaInstance, nfaInstance, mdfaInstance) {
@@ -138,5 +155,4 @@ class AutomataService {
   compareAutomata(mdfaInstance, other) {
     return _lib.DFA_equalsDFA(mdfaInstance, other);
   }
-
 }

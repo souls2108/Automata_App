@@ -80,6 +80,37 @@ class AutomataLibCpp {
   late final _NFA_create_instance = _NFA_create_instancePtr.asFunction<
       ffi.Pointer<NFA> Function(ffi.Pointer<ffi.Char>)>();
 
+  ffi.Pointer<NFA> NFA_create_instance_from_NFA(
+    ffi.Pointer<NFA> other,
+  ) {
+    return _NFA_create_instance_from_NFA(
+      other,
+    );
+  }
+
+  late final _NFA_create_instance_from_NFAPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<NFA> Function(ffi.Pointer<NFA>)>>(
+          'NFA_create_instance_from_NFA');
+  late final _NFA_create_instance_from_NFA = _NFA_create_instance_from_NFAPtr
+      .asFunction<ffi.Pointer<NFA> Function(ffi.Pointer<NFA>)>();
+
+  ffi.Pointer<NFA> NFA_create_instance_from_DFA(
+    ffi.Pointer<DFA> dfa,
+    int removeDeadStates,
+  ) {
+    return _NFA_create_instance_from_DFA(
+      dfa,
+      removeDeadStates,
+    );
+  }
+
+  late final _NFA_create_instance_from_DFAPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<NFA> Function(
+              ffi.Pointer<DFA>, ffi.Int)>>('NFA_create_instance_from_DFA');
+  late final _NFA_create_instance_from_DFA = _NFA_create_instance_from_DFAPtr
+      .asFunction<ffi.Pointer<NFA> Function(ffi.Pointer<DFA>, int)>();
+
   void NFA_destroy_instance(
     ffi.Pointer<NFA> instance,
   ) {
@@ -233,6 +264,20 @@ class AutomataLibCpp {
       _DFA_create_instance_from_dataPtr.asFunction<
           ffi.Pointer<DFA> Function(ffi.Pointer<ffi.Char>, int,
               ffi.Pointer<ffi.Int>, int, ffi.Pointer<ffi.Int>, int)>();
+
+  ffi.Pointer<DFA> DFA_create_instance_from_DFA(
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_create_instance_from_DFA(
+      other,
+    );
+  }
+
+  late final _DFA_create_instance_from_DFAPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>>(
+          'DFA_create_instance_from_DFA');
+  late final _DFA_create_instance_from_DFA = _DFA_create_instance_from_DFAPtr
+      .asFunction<ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>();
 
   ffi.Pointer<DFA> DFA_create_instance_from_NFA(
     ffi.Pointer<NFA> nfa,

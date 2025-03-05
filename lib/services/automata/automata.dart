@@ -45,5 +45,5 @@ class Automata {
     AutomataService().freeInstance(dfa, nfa, mdfa);
   }
 
-  Automata union(Automata other) {}
+  // Automata union(Automata other) {}
 }
