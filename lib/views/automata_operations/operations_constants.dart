@@ -1,6 +1,6 @@
 enum OperationButtons {
-  open,
-  close,
+  bracketOpen,
+  bracketClose,
   union,
   intersection,
   complement,
@@ -10,8 +10,8 @@ enum OperationButtons {
 
 int getPrecedence(OperationButtons operation) {
   switch (operation) {
-    case OperationButtons.open:
-    case OperationButtons.close:
+    case OperationButtons.bracketOpen:
+    case OperationButtons.bracketClose:
       return 6;
     case OperationButtons.complement:
     case OperationButtons.reverse:

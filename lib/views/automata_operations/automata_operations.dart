@@ -3,6 +3,7 @@ import 'package:automata_app/services/automata/automata.dart';
 import 'package:automata_app/views/automata_operations/evaluation_exceptions.dart';
 import 'package:automata_app/views/automata_operations/operations_constants.dart';
 import 'package:automata_app/views/view_automata/automata_view.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ class AutomataOperations extends StatefulWidget {
 }
 
 class _AutomataOperationsState extends State<AutomataOperations> {
+  late AutomataProvider providerAutomata;
   final _expression = [];
 
   final _operations = OperationButtons.values;
@@ -28,7 +30,7 @@ class _AutomataOperationsState extends State<AutomataOperations> {
 
   @override
   Widget build(BuildContext context) {
-    final providerAutomata = Provider.of<AutomataProvider>(context);
+    providerAutomata = Provider.of<AutomataProvider>(context);
     final automataNames = providerAutomata.names;
     final automatas = providerAutomata.automatas;
 
@@ -156,10 +158,21 @@ class _AutomataOperationsState extends State<AutomataOperations> {
       if (e is OperationButtons) {
         return ExpressionItemTile(
           color: _operationColor[e]!,
-          onTap: () {
-            devtools.log("Pressed: ${e.toString()}");
+          onDoubleTap: () {
+            _expression.remove(e);
+            setState(() {});
           },
           itemName: e.toString().split('.').last,
+        );
+      }
+      if (e is Automata) {
+        return ExpressionItemTile(
+          color: Colors.grey.shade800,
+          onDoubleTap: () {
+            _expression.remove(e);
+            setState(() {});
+          },
+          itemName: providerAutomata.getMetadata(e)!.name,
         );
       }
       return Placeholder();
@@ -172,9 +185,6 @@ class _AutomataOperationsState extends State<AutomataOperations> {
     List postfix = [];
     List<OperationButtons> operatorStack = [];
 
-    try {} catch (e) {
-      throw InvalidExpression(message: "Invalid Expression");
-    }
     for (var item in _expression) {
       if (item is Automata) {
         postfix.add(item);
@@ -189,6 +199,10 @@ class _AutomataOperationsState extends State<AutomataOperations> {
 
     while (operatorStack.isNotEmpty) {
       postfix.add(operatorStack.removeLast());
+    }
+
+    for (var element in postfix) {
+      devtools.log(element.toString());
     }
 
     List<Automata> automataStack = [];
@@ -230,10 +244,9 @@ class _AutomataOperationsState extends State<AutomataOperations> {
               automataStack.add(a.complement());
             }
             break;
-          case OperationButtons.open:
-          case OperationButtons.close:
-            assert(false, "Backets should have been removed");
-            break;
+          case OperationButtons.bracketOpen:
+          case OperationButtons.bracketClose:
+            throw InvalidExpression(message: "Invalid Expression 1");
         }
       }
     }
@@ -249,17 +262,17 @@ class _AutomataOperationsState extends State<AutomataOperations> {
 class ExpressionItemTile extends StatelessWidget {
   final String itemName;
   final Color color;
-  final GestureTapCallback onTap;
+  final GestureDoubleTapCallback onDoubleTap;
   const ExpressionItemTile(
       {super.key,
       required this.itemName,
       required this.color,
-      required this.onTap});
+      required this.onDoubleTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: onTap,
+        onDoubleTap: onDoubleTap,
         child: Container(
           decoration: BoxDecoration(
             color: color,
