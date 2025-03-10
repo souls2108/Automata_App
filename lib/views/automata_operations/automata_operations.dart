@@ -1,5 +1,6 @@
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/automata/automata.dart';
+import 'package:automata_app/views/automata_operations/evaluation_exceptions.dart';
 import 'package:automata_app/views/automata_operations/operations_constants.dart';
 import 'package:automata_app/views/view_automata/automata_view.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,25 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                     ),
                   ),
                 ),
-                ElevatedButton(onPressed: () {}, child: const Text('Evaluate')),
+                ElevatedButton(
+                    onPressed: () {
+                      try {
+                        final automata = evaluateExpression();
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AutomataView(
+                            automata: automata,
+                          ),
+                        ));
+                      } on InvalidExpression catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.message),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Evaluate')),
               ],
             ),
           ),
@@ -101,15 +120,21 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                           itemCount: automatas.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(automataNames.elementAt(index)),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => AutomataView(
-                                    automata: automatas.elementAt(index),
-                                  ),
-                                ));
-                              },
-                            );
+                                title: Text(automataNames.elementAt(index)),
+                                onLongPress: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AutomataView(
+                                      automata: automatas.elementAt(index),
+                                    ),
+                                  ));
+                                },
+                                onTap: () {
+                                  _expression.add(automatas.elementAt(index));
+                                  setState(() {
+                                    devtools.log(
+                                        "Automata: ${automataNames.elementAt(index)} added expression");
+                                  });
+                                });
                           },
                         ),
                       );
@@ -143,75 +168,82 @@ class _AutomataOperationsState extends State<AutomataOperations> {
     return res;
   }
 
-  // Automata evaluateExpression() {
-  //   List postfix = [];
-  //   List<OperationButtons> stack = [];
-  //   for (var item in _expression) {
-  //     if (item is Automata) {
-  //       postfix.add(item);
-  //     } else if (item is OperationButtons) {
-  //       while (stack.isNotEmpty &&
-  //           getPrecedence(stack.last) >= getPrecedence(item)) {
-  //         postfix.add(stack.removeLast());
-  //       }
-  //       stack.add(item);
-  //     }
-  //   }
+  Automata evaluateExpression() {
+    List postfix = [];
+    List<OperationButtons> operatorStack = [];
 
-  //   while (stack.isNotEmpty) {
-  //     postfix.add(stack.removeLast());
-  //   }
+    try {} catch (e) {
+      throw InvalidExpression(message: "Invalid Expression");
+    }
+    for (var item in _expression) {
+      if (item is Automata) {
+        postfix.add(item);
+      } else if (item is OperationButtons) {
+        while (operatorStack.isNotEmpty &&
+            getPrecedence(operatorStack.last) >= getPrecedence(item)) {
+          postfix.add(operatorStack.removeLast());
+        }
+        operatorStack.add(item);
+      }
+    }
 
-  //   List<Automata> automataStack = [];
-  //   for (var item in postfix) {
-  //     if (item is Automata) {
-  //       automataStack.add(item);
-  //     } else if (item is OperationButtons) {
-  //       switch (item) {
-  //         case OperationButtons.union:
-  //           {
-  //             var a = automataStack.removeLast();
-  //             var b = automataStack.removeLast();
-  //             automataStack.add(a.union(b));
-  //           }
-  //           break;
-  //         case OperationButtons.intersection:
-  //           {
-  //             var a = automataStack.removeLast();
-  //             var b = automataStack.removeLast();
-  //             automataStack.add(a.intersection(b));
-  //           }
-  //           break;
-  //         case OperationButtons.concat:
-  //           {
-  //             var a = automataStack.removeLast();
-  //             var b = automataStack.removeLast();
-  //             automataStack.add(a.concat(b));
-  //           }
-  //           break;
-  //         case OperationButtons.reverse:
-  //           {
-  //             var a = automataStack.removeLast();
-  //             automataStack.add(a.reverse());
-  //           }
-  //           break;
-  //         case OperationButtons.complement:
-  //           {
-  //             var a = automataStack.removeLast();
-  //             automataStack.add(a.complement());
-  //           }
-  //           break;
-  //         case OperationButtons.open:
-  //         case OperationButtons.close:
-  //           break;
-  //       }
-  //     }
-  //   }
+    while (operatorStack.isNotEmpty) {
+      postfix.add(operatorStack.removeLast());
+    }
 
-  //   devtools.log(postfix.toString());
+    List<Automata> automataStack = [];
+    for (var item in postfix) {
+      if (item is Automata) {
+        automataStack.add(item);
+      } else if (item is OperationButtons) {
+        switch (item) {
+          case OperationButtons.union:
+            {
+              var a = automataStack.removeLast();
+              var b = automataStack.removeLast();
+              automataStack.add(a.union(b));
+            }
+            break;
+          case OperationButtons.intersection:
+            {
+              var a = automataStack.removeLast();
+              var b = automataStack.removeLast();
+              automataStack.add(a.intersection(b));
+            }
+            break;
+          case OperationButtons.concat:
+            {
+              var a = automataStack.removeLast();
+              var b = automataStack.removeLast();
+              automataStack.add(a.concat(b));
+            }
+            break;
+          case OperationButtons.reverse:
+            {
+              var a = automataStack.removeLast();
+              automataStack.add(a.reverse());
+            }
+            break;
+          case OperationButtons.complement:
+            {
+              var a = automataStack.removeLast();
+              automataStack.add(a.complement());
+            }
+            break;
+          case OperationButtons.open:
+          case OperationButtons.close:
+            assert(false, "Backets should have been removed");
+            break;
+        }
+      }
+    }
 
-  //   return Automata.fromRegex("a");
-  // }
+    if (automataStack.length != 1) {
+      throw InvalidExpression(message: "Invalid Expression");
+    }
+
+    return automataStack.first;
+  }
 }
 
 class ExpressionItemTile extends StatelessWidget {

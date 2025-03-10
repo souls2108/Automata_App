@@ -14,30 +14,35 @@ class AutomataView extends StatefulWidget {
 }
 
 class _AutomataViewState extends State<AutomataView> {
-  late final TextEditingController _name;
+  late AutomataProvider providerAutomata;
+  late final TextEditingController _nameController;
+  late final Automata automata;
 
   @override
   void initState() {
-    _name = TextEditingController();
+    _nameController = TextEditingController();
+    automata = widget.automata;
+    automata.generateDotText();
     super.initState();
   }
 
   @override
   void dispose() {
-    _name.dispose();
+    _nameController.dispose();
+    if (!providerAutomata.exists(automata)) automata.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final automata = widget.automata;
-    final providerAutomata = Provider.of<AutomataProvider>(context);
+    providerAutomata = Provider.of<AutomataProvider>(context);
 
     saveButton() {
       return ElevatedButton.icon(
         onPressed: () {
           // if(!providerAutomata.exists(automata)){
-          providerAutomata.add(automata, _name.text);
+          providerAutomata.add(automata, _nameController.text);
           // }
           Navigator.of(context).popUntil((route) => route.isFirst);
         },
@@ -58,11 +63,11 @@ class _AutomataViewState extends State<AutomataView> {
     }
 
     nameField() {
-      _name.text = providerAutomata.exists(automata)
+      _nameController.text = providerAutomata.exists(automata)
           ? providerAutomata.getMetadata(automata)!.name
           : providerAutomata.getDefaultName();
       return TextField(
-        controller: _name,
+        controller: _nameController,
         decoration: const InputDecoration(
           labelText: 'Automata name',
         ),

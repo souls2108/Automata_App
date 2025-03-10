@@ -1,9 +1,11 @@
 import 'package:automata_app/services/automata/automata_service.dart';
 
+import 'dart:developer' as devtool show log;
+
 class Automata {
   late final String regex;
   late final Map<String, dynamic> automataData;
-  late final Map<String, dynamic> dotText;
+  late Map<String, dynamic> dotText;
 
   Automata.fromRegex(this.regex) {
     automataData = AutomataService().createFromRegex(regex);
@@ -52,8 +54,10 @@ class Automata {
   }
 
   Automata union(Automata other) {
+    devtool.log('Union 1');
     final nfaInstance = AutomataService()
         .unionNFA(automataData['nfa'], other.automataData['nfa']);
+    devtool.log('Union 2');
     final resAutomata = Automata._fromNFA(nfaInstance);
     return resAutomata;
   }
@@ -88,6 +92,7 @@ class Automata {
     //TODO refactor for direct operation
     Automata otherComplement = other.complement();
     Automata resAutomata = intersection(otherComplement);
+    otherComplement.dispose();
     return resAutomata;
   }
 }
