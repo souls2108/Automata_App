@@ -24,7 +24,13 @@ class Automata {
         AutomataService().createFromDFAtable(symbols, tableData, finalStates);
   }
 
-  Automata._fromDFA() {}
+  Automata._fromDFA(dfaInstance) {
+    automataData = AutomataService().createFromDFA(dfaInstance);
+  }
+
+  Automata._fromNFA(nfaInstance) {
+    automataData = AutomataService().createFromNFA(nfaInstance);
+  }
 
   generateDotText() {
     final dfa = automataData['dfa'];
@@ -45,5 +51,43 @@ class Automata {
     AutomataService().freeInstance(dfa, nfa, mdfa);
   }
 
-  // Automata union(Automata other) {}
+  Automata union(Automata other) {
+    final nfaInstance = AutomataService()
+        .unionNFA(automataData['nfa'], other.automataData['nfa']);
+    final resAutomata = Automata._fromNFA(nfaInstance);
+    return resAutomata;
+  }
+
+  Automata intersection(Automata other) {
+    final dfaInstance = AutomataService()
+        .intersectionDFA(automataData['mdfa'], other.automataData['mdfa']);
+    final resAutomata = Automata._fromDFA(dfaInstance);
+    return resAutomata;
+  }
+
+  Automata complement() {
+    final dfaInstance = AutomataService().complementDFA(automataData['mdfa']);
+    final resAutomata = Automata._fromDFA(dfaInstance);
+    return resAutomata;
+  }
+
+  Automata reverse() {
+    final nfaInstance = AutomataService().reverseNFA(automataData['nfa']);
+    final resAutomata = Automata._fromNFA(nfaInstance);
+    return resAutomata;
+  }
+
+  Automata concat(Automata other) {
+    final nfaInstance = AutomataService()
+        .concatNFA(automataData['nfa'], other.automataData['nfa']);
+    final resAutomata = Automata._fromNFA(nfaInstance);
+    return resAutomata;
+  }
+
+  Automata difference(Automata other) {
+    //TODO refactor for direct operation
+    Automata otherComplement = other.complement();
+    Automata resAutomata = intersection(otherComplement);
+    return resAutomata;
+  }
 }
