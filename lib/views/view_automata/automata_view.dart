@@ -5,6 +5,8 @@ import 'package:automata_app/widgets/interactive_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'dart:developer' as devtools show log;
+
 class AutomataView extends StatefulWidget {
   final Automata automata;
 
@@ -21,6 +23,7 @@ class _AutomataViewState extends State<AutomataView> {
   final List<String> _viewItems = ['nfa', 'dfa', 'mdfa'];
   bool _testStringVisible = false;
   bool _isTestStringAccepted = false;
+  bool _isZooming = false;
 
   @override
   void initState() {
@@ -34,6 +37,13 @@ class _AutomataViewState extends State<AutomataView> {
     _name.dispose();
     _testStringTextController.dispose();
     super.dispose();
+  }
+
+  void _onZoomChange(bool isZooming) {
+    devtools.log('isZooming: $isZooming');
+    setState(() {
+      _isZooming = isZooming;
+    });
   }
 
   @override
@@ -83,59 +93,70 @@ class _AutomataViewState extends State<AutomataView> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                nameField(),
-                const SizedBox(height: 20),
-                Text('View: ${_currentView.toUpperCase()}'),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
-                    ),
-                    color: Colors.grey.shade50,
-                  ),
-                  child: InteractiveWidget(
-                    child: SizedBox(
-                      height: 300,
-                      width: MediaQuery.of(context).size.width,
-                      child: GraphSvgProvider.instance
-                          .generate(automata.dotText[_currentView]),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: _viewButtons(),
-                ),
-                const SizedBox(height: 20),
-                if (_testStringVisible) _testStringWidget(),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _testStringVisible = !_testStringVisible;
-                    });
-                  },
-                  child: Text(_testStringVisible ? 'Collapse' : 'Test String'),
-                ),
-                const Text('NFA:'),
-                if (automata.dotText['nfa'] != null)
-                  GraphSvgProvider.instance.generate(automata.dotText['nfa']),
-                const Text('DFA:'),
-                GraphSvgProvider.instance.generate(automata.dotText['dfa']),
-                const Text('Minimal DFA:'),
-                GraphSvgProvider.instance.generate(automata.dotText['mdfa']),
-                Row(
+          child: GestureDetector(
+            onScaleStart: (_) {},
+            behavior: HitTestBehavior.opaque,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                return _isZooming;
+              },
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    saveButton(),
-                    deleteButton(),
+                    nameField(),
+                    const SizedBox(height: 20),
+                    Text('View: ${_currentView.toUpperCase()}'),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        color: Colors.grey.shade50,
+                      ),
+                      child: InteractiveWidget(
+                        onZoomChange: _onZoomChange,
+                        child: SizedBox(
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          child: GraphSvgProvider.instance
+                              .generate(automata.dotText[_currentView]),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: _viewButtons(),
+                    ),
+                    const SizedBox(height: 20),
+                    if (_testStringVisible) _testStringWidget(),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _testStringVisible = !_testStringVisible;
+                        });
+                      },
+                      child:
+                          Text(_testStringVisible ? 'Collapse' : 'Test String'),
+                    ),
+                    // const Text('NFA:'),
+                    // if (automata.dotText['nfa'] != null)
+                    //   GraphSvgProvider.instance.generate(automata.dotText['nfa']),
+                    // const Text('DFA:'),
+                    // GraphSvgProvider.instance.generate(automata.dotText['dfa']),
+                    // const Text('Minimal DFA:'),
+                    // GraphSvgProvider.instance.generate(automata.dotText['mdfa']),
+                    Row(
+                      children: [
+                        saveButton(),
+                        deleteButton(),
+                      ],
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
           ),
         ));

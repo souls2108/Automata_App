@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 class InteractiveWidget extends StatefulWidget {
   final Widget child;
-  const InteractiveWidget({super.key, required this.child});
+  final Function(bool) onZoomChange;
+  const InteractiveWidget({
+    super.key,
+    required this.child,
+    required this.onZoomChange,
+  });
 
   @override
   State<InteractiveWidget> createState() => _InteractiveWidgetState();
@@ -45,6 +50,8 @@ class _InteractiveWidgetState extends State<InteractiveWidget> {
         boundaryMargin: EdgeInsets.all(20),
         minScale: 0.5,
         maxScale: 5.0,
+        onInteractionStart: (_) => widget.onZoomChange(true),
+        onInteractionEnd: (_) => widget.onZoomChange(false),
         child: widget.child,
       ),
     );
