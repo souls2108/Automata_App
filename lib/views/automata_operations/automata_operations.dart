@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/automata/automata.dart';
+import 'package:automata_app/views/automata_operations/evaluation.dart';
 import 'package:automata_app/views/automata_operations/evaluation_exceptions.dart';
 import 'package:automata_app/views/automata_operations/operations_constants.dart';
 import 'package:automata_app/views/view_automata/automata_view.dart';
@@ -8,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'dart:developer' as devtools show log;
+
+import 'package:uuid/uuid.dart';
 
 class AutomataOperations extends StatefulWidget {
   const AutomataOperations({super.key});
@@ -67,7 +72,9 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                 ElevatedButton(
                     onPressed: () {
                       try {
-                        final automata = evaluateExpression();
+                        final expression =
+                            _expression.map((e) => e["item"]).toList();
+                        final automata = evaluateExpression(expression);
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => AutomataView(
                             automata: automata,
@@ -77,6 +84,13 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(e.message),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Unknown error during evaluation"),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -131,7 +145,11 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                                   ));
                                 },
                                 onTap: () {
-                                  _expression.add(automatas.elementAt(index));
+                                  String id = Uuid().v4();
+                                  _expression.add({
+                                    "id": id,
+                                    "item": automatas.elementAt(index),
+                                  });
                                   setState(() {
                                     devtools.log(
                                         "Automata: ${automataNames.elementAt(index)} added expression");
@@ -148,114 +166,42 @@ class _AutomataOperationsState extends State<AutomataOperations> {
   }
 
   void _onOperationButtonPressed(OperationButtons operation) {
-    _expression.add(operation);
-    devtools.log("Operation: $operation");
+    String id = Uuid().v4();
+    _expression.add({
+      "id": id,
+      "item": operation,
+    });
     setState(() {});
   }
 
   List<Widget> _buildExpression() {
     final res = _expression.map((e) {
-      if (e is OperationButtons) {
+      final item = e["item"];
+      final id = e["id"];
+      if (item is OperationButtons) {
         return ExpressionItemTile(
-          color: _operationColor[e]!,
+          color: _operationColor[item]!,
           onDoubleTap: () {
-            _expression.remove(e);
+            _expression.removeWhere((element) => element["id"] == id);
             setState(() {});
           },
-          itemName: e.toString().split('.').last,
+          itemName: item.toString().split('.').last,
         );
       }
-      if (e is Automata) {
+      if (item is Automata) {
         return ExpressionItemTile(
           color: Colors.grey.shade800,
           onDoubleTap: () {
-            _expression.remove(e);
+            _expression.removeWhere((element) => element["id"] == id);
             setState(() {});
           },
-          itemName: providerAutomata.getMetadata(e)!.name,
+          itemName: providerAutomata.getMetadata(item)!.name,
         );
       }
       return Placeholder();
     }).toList();
     devtools.log(res.toString());
     return res;
-  }
-
-  Automata evaluateExpression() {
-    List postfix = [];
-    List<OperationButtons> operatorStack = [];
-
-    for (var item in _expression) {
-      if (item is Automata) {
-        postfix.add(item);
-      } else if (item is OperationButtons) {
-        while (operatorStack.isNotEmpty &&
-            getPrecedence(operatorStack.last) >= getPrecedence(item)) {
-          postfix.add(operatorStack.removeLast());
-        }
-        operatorStack.add(item);
-      }
-    }
-
-    while (operatorStack.isNotEmpty) {
-      postfix.add(operatorStack.removeLast());
-    }
-
-    for (var element in postfix) {
-      devtools.log(element.toString());
-    }
-
-    List<Automata> automataStack = [];
-    for (var item in postfix) {
-      if (item is Automata) {
-        automataStack.add(item);
-      } else if (item is OperationButtons) {
-        switch (item) {
-          case OperationButtons.union:
-            {
-              var a = automataStack.removeLast();
-              var b = automataStack.removeLast();
-              automataStack.add(a.union(b));
-            }
-            break;
-          case OperationButtons.intersection:
-            {
-              var a = automataStack.removeLast();
-              var b = automataStack.removeLast();
-              automataStack.add(a.intersection(b));
-            }
-            break;
-          case OperationButtons.concat:
-            {
-              var a = automataStack.removeLast();
-              var b = automataStack.removeLast();
-              automataStack.add(a.concat(b));
-            }
-            break;
-          case OperationButtons.reverse:
-            {
-              var a = automataStack.removeLast();
-              automataStack.add(a.reverse());
-            }
-            break;
-          case OperationButtons.complement:
-            {
-              var a = automataStack.removeLast();
-              automataStack.add(a.complement());
-            }
-            break;
-          case OperationButtons.bracketOpen:
-          case OperationButtons.bracketClose:
-            throw InvalidExpression(message: "Invalid Expression 1");
-        }
-      }
-    }
-
-    if (automataStack.length != 1) {
-      throw InvalidExpression(message: "Invalid Expression");
-    }
-
-    return automataStack.first;
   }
 }
 
