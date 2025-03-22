@@ -5,8 +5,6 @@ import 'package:automata_app/widgets/interactive_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'dart:developer' as devtools show log;
-
 class AutomataView extends StatefulWidget {
   final Automata automata;
 
@@ -40,7 +38,6 @@ class _AutomataViewState extends State<AutomataView> {
   }
 
   void _onZoomChange(bool isZooming) {
-    devtools.log('isZooming: $isZooming');
     setState(() {
       _isZooming = isZooming;
     });
@@ -141,13 +138,6 @@ class _AutomataViewState extends State<AutomataView> {
                       child:
                           Text(_testStringVisible ? 'Collapse' : 'Test String'),
                     ),
-                    // const Text('NFA:'),
-                    // if (automata.dotText['nfa'] != null)
-                    //   GraphSvgProvider.instance.generate(automata.dotText['nfa']),
-                    // const Text('DFA:'),
-                    // GraphSvgProvider.instance.generate(automata.dotText['dfa']),
-                    // const Text('Minimal DFA:'),
-                    // GraphSvgProvider.instance.generate(automata.dotText['mdfa']),
                     Row(
                       children: [
                         saveButton(),
