@@ -130,6 +130,13 @@ class AutomataService {
     return dotText;
   }
 
+  bool testString(dfaInstance, String input) {
+    final inputPointer = input.toNativeUtf8().cast<Char>();
+    final result = _lib.DFA_test(dfaInstance, inputPointer) == 1;
+    malloc.free(inputPointer);
+    return result;
+  }
+
   compareAutomata(mdfaInstance, other) {
     return _lib.DFA_equalsDFA(mdfaInstance, other);
   }

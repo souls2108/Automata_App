@@ -36,6 +36,11 @@ class Automata {
         .compareAutomata(automataData['mdfa'], other.automataData['mdfa']);
   }
 
+  bool testString(String str) {
+    final mdfa = automataData['mdfa'];
+    return AutomataService().testString(mdfa, str);
+  }
+
   void dispose() {
     final dfa = automataData['dfa'];
     final nfa = automataData['nfa'];
