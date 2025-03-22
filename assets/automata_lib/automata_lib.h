@@ -16,6 +16,8 @@ const char* ParseTree_generateDotText(ParseTree* instance);
 
 // NFA class Definition
 NFA* NFA_create_instance(const char* reg);
+NFA* NFA_create_instance_from_NFA(NFA* other);
+NFA* NFA_create_instance_from_DFA(DFA* dfa, int removeDeadStates);
 void NFA_destroy_instance(NFA* instance);
 const char* NFA_generateDotText(NFA* instance);
 NFA* NFA_unionNFA(const NFA* instance, const NFA* otherInstance);
@@ -30,6 +32,7 @@ DFA* DFA_create_instance_from_data(
     char* symbols, int symbols_size, int* table, 
     int table_size, int* final_states, int final_states_size
 );
+DFA* DFA_create_instance_from_DFA(DFA* other);
 DFA* DFA_create_instance_from_NFA(NFA* nfa);
 void DFA_destroy_instance(DFA* instance);
 

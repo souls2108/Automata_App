@@ -2,12 +2,17 @@ import 'dart:math';
 
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/automata/automata.dart';
+import 'package:automata_app/views/automata_operations/evaluation.dart';
+import 'package:automata_app/views/automata_operations/evaluation_exceptions.dart';
 import 'package:automata_app/views/automata_operations/operations_constants.dart';
 import 'package:automata_app/views/view_automata/automata_view.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'dart:developer' as devtools show log;
+
+import 'package:uuid/uuid.dart';
 
 class AutomataOperations extends StatefulWidget {
   const AutomataOperations({super.key});
@@ -17,6 +22,7 @@ class AutomataOperations extends StatefulWidget {
 }
 
 class _AutomataOperationsState extends State<AutomataOperations> {
+  late AutomataProvider providerAutomata;
   final _expression = [];
 
   final _operations = OperationButtons.values;
@@ -29,7 +35,7 @@ class _AutomataOperationsState extends State<AutomataOperations> {
 
   @override
   Widget build(BuildContext context) {
-    final providerAutomata = Provider.of<AutomataProvider>(context);
+    providerAutomata = Provider.of<AutomataProvider>(context);
     final automataNames = providerAutomata.names;
     final automatas = providerAutomata.automatas;
 
@@ -38,23 +44,62 @@ class _AutomataOperationsState extends State<AutomataOperations> {
         title: const Text('Automata Operations'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              if (_expression.isNotEmpty)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 5,
-                    children: _buildExpression(),
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  height: 90,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    color: Colors.grey.shade200,
+                  ),
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 5,
+                      children: _buildExpression(),
+                    ),
                   ),
                 ),
-              ElevatedButton(onPressed: () {}, child: const Text('Evaluate')),
-            ],
-          )),
+                ElevatedButton(
+                    onPressed: () {
+                      try {
+                        final expression =
+                            _expression.map((e) => e["item"]).toList();
+                        final automata = evaluateExpression(expression);
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AutomataView(
+                            automata: automata,
+                          ),
+                        ));
+                      } on InvalidExpression catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.message),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Unknown error during evaluation"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Evaluate')),
+              ],
+            ),
+          ),
           SizedBox(
               height: MediaQuery.of(context).size.height * 0.4,
               child: Stack(children: [
@@ -91,15 +136,25 @@ class _AutomataOperationsState extends State<AutomataOperations> {
                           itemCount: automatas.length,
                           itemBuilder: (context, index) {
                             return ListTile(
-                              title: Text(automataNames.elementAt(index)),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => AutomataView(
-                                    automata: automatas.elementAt(index),
-                                  ),
-                                ));
-                              },
-                            );
+                                title: Text(automataNames.elementAt(index)),
+                                onLongPress: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AutomataView(
+                                      automata: automatas.elementAt(index),
+                                    ),
+                                  ));
+                                },
+                                onTap: () {
+                                  String id = Uuid().v4();
+                                  _expression.add({
+                                    "id": id,
+                                    "item": automatas.elementAt(index),
+                                  });
+                                  setState(() {
+                                    devtools.log(
+                                        "Automata: ${automataNames.elementAt(index)} added expression");
+                                  });
+                                });
                           },
                         ),
                       );
@@ -111,39 +166,36 @@ class _AutomataOperationsState extends State<AutomataOperations> {
   }
 
   void _onOperationButtonPressed(OperationButtons operation) {
-    switch (operation) {
-      case OperationButtons.union:
-        _expression.add(operation);
-        break;
-      case OperationButtons.intersection:
-        _expression.add(operation);
-        break;
-      case OperationButtons.complement:
-        _expression.add(operation);
-        break;
-      case OperationButtons.reverse:
-        _expression.add(operation);
-        break;
-      case OperationButtons.concat:
-        _expression.add(operation);
-        break;
-      case OperationButtons.regex:
-        _expression.add(operation);
-        break;
-    }
-    devtools.log("Operation: $operation");
+    String id = Uuid().v4();
+    _expression.add({
+      "id": id,
+      "item": operation,
+    });
     setState(() {});
   }
 
   List<Widget> _buildExpression() {
     final res = _expression.map((e) {
-      if (e is OperationButtons) {
+      final item = e["item"];
+      final id = e["id"];
+      if (item is OperationButtons) {
         return ExpressionItemTile(
-          color: _operationColor[e]!,
-          onTap: () {
-            devtools.log("Pressed: ${e.toString()}");
+          color: _operationColor[item]!,
+          onDoubleTap: () {
+            _expression.removeWhere((element) => element["id"] == id);
+            setState(() {});
           },
-          itemName: e.toString().split('.').last,
+          itemName: item.toString().split('.').last,
+        );
+      }
+      if (item is Automata) {
+        return ExpressionItemTile(
+          color: Colors.grey.shade800,
+          onDoubleTap: () {
+            _expression.removeWhere((element) => element["id"] == id);
+            setState(() {});
+          },
+          itemName: providerAutomata.getMetadata(item)!.name,
         );
       }
       return Placeholder();
@@ -151,26 +203,22 @@ class _AutomataOperationsState extends State<AutomataOperations> {
     devtools.log(res.toString());
     return res;
   }
-
-  Automata evaluateExpression() {
-    return Automata.fromRegex("a");
-  }
 }
 
 class ExpressionItemTile extends StatelessWidget {
   final String itemName;
   final Color color;
-  final GestureTapCallback onTap;
+  final GestureDoubleTapCallback onDoubleTap;
   const ExpressionItemTile(
       {super.key,
       required this.itemName,
       required this.color,
-      required this.onTap});
+      required this.onDoubleTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: onTap,
+        onDoubleTap: onDoubleTap,
         child: Container(
           decoration: BoxDecoration(
             color: color,

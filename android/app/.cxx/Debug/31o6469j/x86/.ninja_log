@@ -9,5 +9,14 @@
 3427	3538	1740941170201748863	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86/libautomata_lib.so	68785f1ace1c9924
 2	3183	1740941447869510751	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	fc232cbe8d11e983
 3183	3292	1740941448013454070	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86/libautomata_lib.so	68785f1ace1c9924
+<<<<<<< HEAD
 1	3527	1742389973991107974	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	fc232cbe8d11e983
 3527	3673	1742389974197405519	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86/libautomata_lib.so	68785f1ace1c9924
+=======
+5	3495	1741198842305501063	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	fc232cbe8d11e983
+3496	3634	1741198842495856841	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86/libautomata_lib.so	68785f1ace1c9924
+7	3982	1741199383365402427	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	fc232cbe8d11e983
+3982	4103	1741199383534957625	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86/libautomata_lib.so	68785f1ace1c9924
+0	2890	1742643130321111340	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	fc232cbe8d11e983
+2890	3047	1742643130538402040	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/x86/libautomata_lib.so	68785f1ace1c9924
+>>>>>>> Automata-Operations

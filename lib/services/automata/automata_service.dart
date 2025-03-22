@@ -96,6 +96,28 @@ class AutomataService {
     };
   }
 
+  createFromDFA(dfaInstance) {
+    final dfa = _lib.DFA_create_instance_from_DFA(dfaInstance);
+    final mdfa = _lib.DFA_minimalDFA(dfaInstance);
+    final nfa = _lib.NFA_create_instance_from_DFA(dfaInstance, 1);
+    return {
+      'nfa': nfa,
+      'dfa': dfa,
+      'mdfa': mdfa,
+    };
+  }
+
+  createFromNFA(nfaInstance) {
+    final nfa = _lib.NFA_create_instance_from_NFA(nfaInstance);
+    final dfa = _lib.DFA_create_instance_from_NFA(nfaInstance);
+    final mdfa = _lib.DFA_minimalDFA(dfa);
+    return {
+      'nfa': nfa,
+      'dfa': dfa,
+      'mdfa': mdfa,
+    };
+  }
+
   freeInstance(dfaInstance, nfaInstance, mdfaInstance) {
     if (dfaInstance != nullptr) _lib.DFA_destroy_instance(dfaInstance);
     if (nfaInstance != nullptr) _lib.NFA_destroy_instance(nfaInstance);
@@ -135,6 +157,31 @@ class AutomataService {
     final result = _lib.DFA_test(dfaInstance, inputPointer) == 1;
     malloc.free(inputPointer);
     return result;
+  }
+
+  unionNFA(nfaInstance, otherNfa) {
+    final resNfa = _lib.NFA_unionNFA(nfaInstance, otherNfa);
+    return resNfa;
+  }
+
+  intersectionDFA(dfaInstance, otherDfa) {
+    final resDfa = _lib.DFA_intersection(dfaInstance, otherDfa);
+    return resDfa;
+  }
+
+  complementDFA(dfaInstance) {
+    final resDfa = _lib.DFA_complement(dfaInstance);
+    return resDfa;
+  }
+
+  reverseNFA(nfaInstance) {
+    final resNfa = _lib.NFA_reverseNFA(nfaInstance);
+    return resNfa;
+  }
+
+  concatNFA(nfaInstance, otherNfa) {
+    final resNfa = _lib.NFA_concat(nfaInstance, otherNfa);
+    return resNfa;
   }
 
   compareAutomata(mdfaInstance, other) {
