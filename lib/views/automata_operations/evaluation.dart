@@ -118,129 +118,129 @@ List infixToPostfix(List infix) {
   return postfix;
 }
 
-class Evaluation {
-  static Automata evaluate(List expression) {
-    return evaluateExpression(expression);
-  }
-}
+// class Evaluation {
+//   static Automata evaluate(List expression) {
+//     return evaluateExpression(expression);
+//   }
+// }
 
-class LL1Parser {
-  Map<NonTerminal, Map<Terminal, GrammarRule>> table;
-  NonTerminal start;
-  LL1Parser(this.table, this.start);
+// class LL1Parser {
+//   Map<NonTerminal, Map<Terminal, GrammarRule>> table;
+//   NonTerminal start;
+//   LL1Parser(this.table, this.start);
 
-  GrammarRule? getRule(NonTerminal nonTerminal, Terminal terminal) {
-    return table[nonTerminal]?[terminal];
-  }
+//   GrammarRule? getRule(NonTerminal nonTerminal, Terminal terminal) {
+//     return table[nonTerminal]?[terminal];
+//   }
 
-  Automata evaluate(List<Terminal> expression) {
-    List stack = [ Terminal.stackSymbol, start];
-    int index = 0;
-    while (index < expression.length && stack.isNotEmpty) {
-      var top = stack.pop();
-      if (top is Terminal) {
-        if (top == expression[index]) {
-          index++;
-        } else {
-          throw InvalidExpression(message: "Invalid Expression");
-        }
-      } else if (top is NonTerminal) {
-        var rule = getRule(top, expression[index]);
-        if (rule == null) {
-          throw InvalidExpression(message: "Invalid Expression");
-        }
-        stack.pushAll(rule.right.reversed);
-      } else {
-        throw InvalidExpression(message: "Invalid Expression");
-      }
-    }
-    return ;
-  }
+//   Automata evaluate(List<Terminal> expression) {
+//     List stack = [ Terminal.stackSymbol, start];
+//     int index = 0;
+//     while (index < expression.length && stack.isNotEmpty) {
+//       var top = stack.pop();
+//       if (top is Terminal) {
+//         if (top == expression[index]) {
+//           index++;
+//         } else {
+//           throw InvalidExpression(message: "Invalid Expression");
+//         }
+//       } else if (top is NonTerminal) {
+//         var rule = getRule(top, expression[index]);
+//         if (rule == null) {
+//           throw InvalidExpression(message: "Invalid Expression");
+//         }
+//         stack.pushAll(rule.right.reversed);
+//       } else {
+//         throw InvalidExpression(message: "Invalid Expression");
+//       }
+//     }
+//     return ;
+//   }
 
-  T evaluate<T>(List<Terminal> expression, Map<Terminal, Function> functionMap) {
-    List stack = [start];
-    int index = 0;
-    while (stack.isNotEmpty) {
-      var top = stack.pop();
-      if (top is Terminal) {
-        if (top == expression[index]) {
-          index++;
-        } else {
-          throw InvalidExpression(message: "Invalid Expression");
-        }
-      } else if (top is NonTerminal) {
-        var rule = getRule(top, expression[index]);
-        stack.(rule.right.reversed);
-      } else {
-        var function = functionMap[top];
-        stack.push(function());
-      }
-    }
-    return null;
-  }
+//   T evaluate<T>(List<Terminal> expression, Map<Terminal, Function> functionMap) {
+//     List stack = [start];
+//     int index = 0;
+//     while (stack.isNotEmpty) {
+//       var top = stack.pop();
+//       if (top is Terminal) {
+//         if (top == expression[index]) {
+//           index++;
+//         } else {
+//           throw InvalidExpression(message: "Invalid Expression");
+//         }
+//       } else if (top is NonTerminal) {
+//         var rule = getRule(top, expression[index]);
+//         stack.(rule.right.reversed);
+//       } else {
+//         var function = functionMap[top];
+//         stack.push(function());
+//       }
+//     }
+//     return null;
+//   }
 
 
 
-}
+// }
 
-class GrammarRule<Terminal, NonTerminal> {
-  NonTerminal left;
-  List<GrammarSymbols> right;
-  GrammarRule(this.left, this.right);
-}
+// class GrammarRule<Terminal, NonTerminal> {
+//   NonTerminal left;
+//   List<GrammarSymbols> right;
+//   GrammarRule(this.left, this.right);
+// }
 
-abstract class GrammarSymbols {}
+// abstract class GrammarSymbols {}
 
-enum Terminal implements GrammarSymbols {
-  union,
-  intersection,
-  complement,
-  difference,
-  reverse,
-  concat,
-  bracketOpen,
-  bracketClose,
-  automata,
-  epsilon,
-  stackSymbol,
-}
+// enum Terminal implements GrammarSymbols {
+//   union,
+//   intersection,
+//   complement,
+//   difference,
+//   reverse,
+//   concat,
+//   bracketOpen,
+//   bracketClose,
+//   automata,
+//   epsilon,
+//   stackSymbol,
+// }
 
-enum NonTerminal implements GrammarSymbols {
-  E,
-  primeE,
-  S,
-  primeS,
-  P,
-  primeP,
-  Q,
-  primeQ,
-  R,
-}
+// enum NonTerminal implements GrammarSymbols {
+//   E,
+//   primeE,
+//   S,
+//   primeS,
+//   P,
+//   primeP,
+//   Q,
+//   primeQ,
+//   R,
+// }
 
-/**
- *
-E -> S E'
-E'-> - S E'
-E'-> ''
-S -> P S'
-S' -> u P S'
-S' -> ''
-P -> Q P'
-P' -> i Q P'
-P' -> ''
-Q -> R Q'
-Q' -> con R Q'
-Q' -> ''
-R -> r R
-R -> c R
-R -> automata
-R -> ( E )
- */
-/**
- * FIRST	FOLLOW	Nonterminal	+	*	(	)	id	$
-{(,id}	{$,)}	E			E -> T E'		E -> T E'	
-{+,''}	{$,)}	E'	E' -> + T E'			E' -> ''		E' -> ''
-{(,id}	{+,$,)}	T			T -> F T'		T -> F T'	
-{*,''}	{+,$,)}	T'	T' -> ''	T' -> * F T'		T' -> ''		T' -> ''
-{(,id}	{*,+,$,)}	F			F -> ( E )		F -> id	
- */
+// /**
+//  *
+// E -> S E'
+// E'-> - S E'
+// E'-> ''
+// S -> P S'
+// S' -> u P S'
+// S' -> ''
+// P -> Q P'
+// P' -> i Q P'
+// P' -> ''
+// Q -> R Q'
+// Q' -> con R Q'
+// Q' -> ''
+// R -> r R
+// R -> c R
+// R -> automata
+// R -> ( E )
+//  */
+// /**
+//  * FIRST	FOLLOW	Nonterminal	+	*	(	)	id	$
+// {(,id}	{$,)}	E			E -> T E'		E -> T E'	
+// {+,''}	{$,)}	E'	E' -> + T E'			E' -> ''		E' -> ''
+// {(,id}	{+,$,)}	T			T -> F T'		T -> F T'	
+// {*,''}	{+,$,)}	T'	T' -> ''	T' -> * F T'		T' -> ''		T' -> ''
+// {(,id}	{*,+,$,)}	F			F -> ( E )		F -> id	
+//  */
