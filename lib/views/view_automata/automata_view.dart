@@ -61,7 +61,7 @@ class _AutomataViewState extends State<AutomataView> {
           // }
           Navigator.of(context).popUntil((route) => route.isFirst);
         },
-        label: const Text('Save Automata'),
+        label: const Text('Save'),
         icon: const Icon(Icons.save),
       );
     }
@@ -72,7 +72,7 @@ class _AutomataViewState extends State<AutomataView> {
           providerAutomata.remove(automata);
           Navigator.of(context).popUntil((route) => route.isFirst);
         },
-        label: const Text('Remove Automata'),
+        label: const Text('Remove'),
         icon: const Icon(Icons.delete),
       );
     }
