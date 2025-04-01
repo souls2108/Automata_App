@@ -555,7 +555,8 @@ NFA::nfa* NFA::post2nfa(string& post) {
             e2->out->addEdge( EPSILON, e1->in);
             nfa* exp = new nfa(e2->in, e1->out);
             st.push(exp);
-            delete e1, e2;
+            delete e1;
+            delete e2;
             break;
         }
 
@@ -569,7 +570,8 @@ NFA::nfa* NFA::post2nfa(string& post) {
             e1->out->addEdge( EPSILON,exp->out);
             e2->out->addEdge( EPSILON,exp->out);
             st.push(exp);
-            delete e1, e2; // removing fragment of nfa to save memory
+            delete e1;
+            delete e2; // deleting intermediate fragment of nfa
             break;
         }
 
@@ -1065,7 +1067,7 @@ string DFA::getDiffString(const DFA& d2, int max_depth){
  * 
  * Myhill-Nerode algorithm to minimize DFA
  */
-DFA DFA::minimal() {
+DFA DFA::minimal() const {
     int n = table.size();
     int symbolSize = symbols.size();
     vector<vector<int>> state_pair_matrix(n);
@@ -1272,6 +1274,18 @@ DFA DFA::reverse() const {
     NFA currNfa(*this);
     NFA resNfa = currNfa.reverseNFA();
     return DFA(resNfa);
+}
+
+bool DFA::isSubset(const DFA& superDfa) const {
+    DFA intersectDfa = intersection(superDfa);
+    if(this->minimal() == intersectDfa.minimal()) {
+        return true;
+    }
+    return false;
+}
+
+bool DFA::isSuperset(const DFA& other) const {
+    return other.isSubset(*this);
 }
 
 /**

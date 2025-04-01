@@ -49,12 +49,14 @@ public:
     vector<pair<string, bool>> getStringBFS();
     map<string, bool> getStringK(int k) const;
     string getDiffString(const DFA& d2, int max_depth=-1);
-    DFA minimal();
+    DFA minimal() const;
     DFA unionDFA(const DFA& other) const;
     DFA intersection(const DFA& other) const;
     DFA complement() const;
     DFA concat(const DFA& other) const;
     DFA reverse() const;
+    bool isSubset(const DFA& other) const;
+    bool isSuperset(const DFA& other) const;
     bool operator==(const DFA& d2);
     bool operator!=(const DFA& d2);
     string generateDotString(bool showDeadStates = true);

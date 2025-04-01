@@ -53,8 +53,10 @@ DFA* DFA_complement(DFA* instance);
 DFA* DFA_concat(DFA* instance, DFA* other);
 DFA* DFA_reverse(DFA* instance);
 int DFA_equalsDFA(DFA* instance, DFA* other);
+int DFA_isSubset(DFA* instance, DFA* other);
+int DFA_isSuperset(DFA* instance, DFA* other);
 
-const char* DFA_generateDotText(DFA* instance);
+const char* DFA_generateDotText(DFA* instance, int showDeadStates);
 const char* DFA_getDFAText(DFA* instance);
 
 

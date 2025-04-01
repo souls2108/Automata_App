@@ -545,19 +545,56 @@ class AutomataLibCpp {
   late final _DFA_equalsDFA = _DFA_equalsDFAPtr.asFunction<
       int Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
 
+  int DFA_isSubset(
+    ffi.Pointer<DFA> instance,
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_isSubset(
+      instance,
+      other,
+    );
+  }
+
+  late final _DFA_isSubsetPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_isSubset');
+  late final _DFA_isSubset = _DFA_isSubsetPtr.asFunction<
+      int Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
+
+  int DFA_isSuperset(
+    ffi.Pointer<DFA> instance,
+    ffi.Pointer<DFA> other,
+  ) {
+    return _DFA_isSuperset(
+      instance,
+      other,
+    );
+  }
+
+  late final _DFA_isSupersetPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              ffi.Pointer<DFA>, ffi.Pointer<DFA>)>>('DFA_isSuperset');
+  late final _DFA_isSuperset = _DFA_isSupersetPtr.asFunction<
+      int Function(ffi.Pointer<DFA>, ffi.Pointer<DFA>)>();
+
   ffi.Pointer<ffi.Char> DFA_generateDotText(
     ffi.Pointer<DFA> instance,
+    int showDeadStates,
   ) {
     return _DFA_generateDotText(
       instance,
+      showDeadStates,
     );
   }
 
   late final _DFA_generateDotTextPtr = _lookup<
-          ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>>(
-      'DFA_generateDotText');
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<DFA>, ffi.Int)>>('DFA_generateDotText');
   late final _DFA_generateDotText = _DFA_generateDotTextPtr.asFunction<
-      ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>();
+      ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>, int)>();
 
   ffi.Pointer<ffi.Char> DFA_getDFAText(
     ffi.Pointer<DFA> instance,

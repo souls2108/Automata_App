@@ -2,7 +2,14 @@
 
 set -e
 
-local_dir="/home/souls/experiments/toc/automata_lib"
+# Load environment variables from .env file
+if [ -f .env ]; then
+  source .env
+else
+  echo "❌ .env file not found. Please create it with the 'local_dir' variable."
+  exit 1
+fi
+
 read -p "Copy Library from $local_dir? (y/n): " copy_lib
 
 if [ "$copy_lib" == "y" ]; then

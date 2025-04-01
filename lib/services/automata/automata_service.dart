@@ -124,7 +124,7 @@ class AutomataService {
     if (mdfaInstance != nullptr) _lib.DFA_destroy_instance(mdfaInstance);
   }
 
-  generateDotText(dfaInstance, nfaInstance, mdfaInstance) {
+  generateDotText(dfaInstance, nfaInstance, mdfaInstance, bool showDeadStates) {
     final dotText = {
       'dfa': '',
       'nfa': '',
@@ -132,7 +132,8 @@ class AutomataService {
     };
 
     if (dfaInstance != null) {
-      final dfaDotPointer = _lib.DFA_generateDotText(dfaInstance);
+      final dfaDotPointer =
+          _lib.DFA_generateDotText(dfaInstance, showDeadStates ? 1 : 0);
       dotText['dfa'] = dfaDotPointer.cast<Utf8>().toDartString();
       malloc.free(dfaDotPointer);
     }
@@ -144,7 +145,8 @@ class AutomataService {
     }
 
     if (mdfaInstance != null) {
-      final mdfaDotPointer = _lib.DFA_generateDotText(mdfaInstance);
+      final mdfaDotPointer =
+          _lib.DFA_generateDotText(mdfaInstance, showDeadStates ? 1 : 0);
       dotText['mdfa'] = mdfaDotPointer.cast<Utf8>().toDartString();
       malloc.free(mdfaDotPointer);
     }

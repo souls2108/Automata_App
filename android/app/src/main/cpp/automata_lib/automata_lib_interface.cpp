@@ -151,15 +151,22 @@ DFA* DFA_reverse(DFA* instance) {
     return new DFA(instance->reverse());
 }
 
+int DFA_isSubset(DFA* instance, DFA* other) {
+    return instance->isSubset(*other);
+}
+
+int DFA_isSuperset(DFA* instance, DFA* other) {
+    return instance->isSuperset(*other);
+}
+
 int DFA_equalsDFA(DFA* instance, DFA* other) {
     return *instance == *other;
 }
-
 
 const char* DFA_getDFAText(DFA* instance) {
     return strdup(instance->generateTextString().c_str());
 }
 
-const char* DFA_generateDotText(DFA* instance) {
-    return strdup(instance->generateDotString().c_str());
+const char* DFA_generateDotText(DFA* instance, int showDeadStates) {
+    return strdup(instance->generateDotString(showDeadStates).c_str());
 }

@@ -38,7 +38,7 @@ class Automata {
     final dfa = automataData['dfa'];
     final nfa = automataData['nfa'];
     final mdfa = automataData['mdfa'];
-    dotText = AutomataService().generateDotText(dfa, nfa, mdfa);
+    dotText = AutomataService().generateDotText(dfa, nfa, mdfa, true);
   }
 
   bool equals(Automata other) {
