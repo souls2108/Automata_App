@@ -1172,6 +1172,88 @@ DFA DFA::minimal() const {
     return DFA(symbols, minimal_table, minimal_final_states, true);
 }
 
+string DFA::regex() const {
+    int stateCnt = stateCount();
+    vector<vector<string>> A(stateCnt, vector<string>(stateCnt, ""));
+    vector<string> B(stateCnt, "");
+
+    const char eps[] = {EPSILON, '\0'};
+
+    auto regex_union = [](const string& a, const string& b) -> string {
+        if(a.empty() || b.empty()) return a + b;
+        return "(" + a + "+" + b + ")";
+    };
+
+    auto regex_kleen = [&](const string& a) -> string {
+        if(a.empty() || a == eps) 
+            return eps;
+        else if(a.size() == 1 && symbols.count(a[0]))
+            return a + '*';
+        else if(a[0] == '(' && a[a.size()-1] == ')')
+            return a + '*';
+        return "(" + a + ")*";
+    };
+
+    auto regex_concat = [&](const string& a, const string& b) -> string {
+        if(a.empty() || b.empty()) return "";
+        if(a == eps && b != eps) return b;
+        if(a != eps && b == eps) return a;
+        if(a == eps && b == eps) return eps;
+        return a + "." + b;
+    };
+
+
+
+
+    for(int currState=0; currState<stateCnt; currState++) {
+        if(DFA::isFinalState(currState)) {
+            B[currState] = eps;
+        }
+
+        for(const auto& it : symbols) {
+            char sym = it.first;
+            int ngb = getStateNgb(currState, sym);
+            string& target_regex = A[currState][ngb];
+            if(target_regex.empty())
+                target_regex = sym;
+            else
+                target_regex = regex_union(target_regex, string(1, sym));
+        }
+    }
+
+    for(int currState=stateCnt-1; currState>=0; currState--) {
+        if( !A[currState][currState].empty() ) {
+            B[currState] = regex_concat(
+                regex_kleen(A[currState][currState]),
+                B[currState]
+            );
+            for(int j=0; j<stateCnt; j++) {
+               A[currState][j] = regex_concat(
+                    regex_kleen(A[currState][currState]),
+                    A[currState][j]
+                );
+            }
+        }
+
+        for(int i=0; i<stateCnt; i++) {
+            if(!A[i][currState].empty()) {
+                B[i] = regex_union(
+                    B[i],
+                    regex_concat(A[i][currState], B[currState])
+                );
+                for(int j=0; j<stateCnt; j++) {
+                    A[i][j] = regex_union(
+                        A[i][j],
+                        regex_concat(A[i][currState], A[currState][j])
+                    );
+                }
+            }
+        }
+    }
+
+    return B[0];
+}
+
 DFA DFA::unionDFA(const DFA& other) const {
     NFA currNfa(*this);
     NFA otherNfa(other);

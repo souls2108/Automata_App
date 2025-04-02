@@ -50,6 +50,7 @@ public:
     map<string, bool> getStringK(int k) const;
     string getDiffString(const DFA& d2, int max_depth=-1);
     DFA minimal() const;
+    string regex() const;
     DFA unionDFA(const DFA& other) const;
     DFA intersection(const DFA& other) const;
     DFA complement() const;

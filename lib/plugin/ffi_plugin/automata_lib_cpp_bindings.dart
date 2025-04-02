@@ -449,6 +449,20 @@ class AutomataLibCpp {
   late final _DFA_minimalDFA = _DFA_minimalDFAPtr.asFunction<
       ffi.Pointer<DFA> Function(ffi.Pointer<DFA>)>();
 
+  ffi.Pointer<ffi.Char> DFA_regex(
+    ffi.Pointer<DFA> instance,
+  ) {
+    return _DFA_regex(
+      instance,
+    );
+  }
+
+  late final _DFA_regexPtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>>(
+      'DFA_regex');
+  late final _DFA_regex = _DFA_regexPtr.asFunction<
+      ffi.Pointer<ffi.Char> Function(ffi.Pointer<DFA>)>();
+
   ffi.Pointer<DFA> DFA_unionDFA(
     ffi.Pointer<DFA> instance,
     ffi.Pointer<DFA> other,

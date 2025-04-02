@@ -41,10 +41,10 @@ class Automata {
     dotText = AutomataService().generateDotText(dfa, nfa, mdfa, true);
   }
 
-  bool equals(Automata other) {
-    return AutomataService()
-        .compareAutomata(automataData['mdfa'], other.automataData['mdfa']);
-  }
+  // bool equals(Automata other) {
+  //   return AutomataService()
+  //       .compareAutomata(automataData['mdfa'], other.automataData['mdfa']);
+  // }
 
   bool testString(String str) {
     final mdfa = automataData['mdfa'];

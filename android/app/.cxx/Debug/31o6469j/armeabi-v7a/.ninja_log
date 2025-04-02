@@ -3,3 +3,5 @@
 3315	3425	1742672335878892804	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/armeabi-v7a/libautomata_lib.so	9747b089771e48ad
 9	5442	1743533136629864915	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	bbb345a7f5dbc805
 5442	5613	1743533136881989142	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/armeabi-v7a/libautomata_lib.so	9747b089771e48ad
+7	4912	1743590448244358770	CMakeFiles/automata_lib.dir/automata_lib/automata_lib_interface.cpp.o	bbb345a7f5dbc805
+4912	5040	1743590448441535592	/home/souls/experiments/flutter/automata_app/android/app/src/jniLibs/armeabi-v7a/libautomata_lib.so	9747b089771e48ad

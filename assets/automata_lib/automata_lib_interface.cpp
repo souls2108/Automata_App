@@ -131,6 +131,10 @@ DFA* DFA_minimalDFA(DFA* instance) {
     return new DFA(instance->minimal());
 }
 
+const char* DFA_regex(DFA* instance) {
+    return strdup(instance->regex().c_str());
+}
+
 DFA* DFA_unionDFA(DFA* instance, DFA* other) {
     return new DFA(instance->unionDFA(*other));
 }

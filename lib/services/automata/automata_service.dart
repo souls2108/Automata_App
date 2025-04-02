@@ -86,11 +86,13 @@ class AutomataService {
       finalStatesSize,
     );
     final mdfa = _lib.DFA_minimalDFA(dfa);
+    final nfa = _lib.NFA_create_instance_from_DFA(dfa, 1);
     malloc.free(symbolsPointer);
     malloc.free(tablePointer);
     malloc.free(finalStatesPointer);
 
     return {
+      'nfa': nfa,
       'dfa': dfa,
       'mdfa': mdfa,
     };
@@ -186,7 +188,15 @@ class AutomataService {
     return resNfa;
   }
 
-  compareAutomata(mdfaInstance, other) {
-    return _lib.DFA_equalsDFA(mdfaInstance, other);
+  bool isEquivalent(mdfaInstance, other) {
+    return _lib.DFA_equalsDFA(mdfaInstance, other) == 1;
+  }
+
+  bool isSubset(instance, other) {
+    return _lib.DFA_isSubset(instance, other) == 1;
+  }
+
+  bool isSuperset(instance, other) {
+    return _lib.DFA_isSuperset(instance, other) == 1;
   }
 }

@@ -47,6 +47,7 @@ int DFA_test(DFA* instance, const char* str);
 const char* DFA_getDiffString(DFA* instance, DFA* other, int max_depth);
 
 DFA* DFA_minimalDFA(DFA* instance);
+const char* DFA_regex(DFA* instance);
 DFA* DFA_unionDFA(DFA* instance, DFA* other);
 DFA* DFA_intersection(DFA* instance, DFA* other);
 DFA* DFA_complement(DFA* instance);
