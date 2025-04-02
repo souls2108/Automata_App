@@ -1,10 +1,8 @@
 import 'dart:async';
-
+import 'package:automata_app/services/graph_svg/exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
-import 'package:flutter_svg/flutter_svg.dart';
 
 class GraphSvgProvider {
   static final GraphSvgProvider _instance = GraphSvgProvider._internal();
@@ -49,22 +47,7 @@ class GraphSvgProvider {
     headlessWebView.run();
   }
 
-  Widget generate(String dotString) {
-    return FutureBuilder<Widget>(
-      future: generateGraphSVG(dotString),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return snapshot.data ?? SizedBox.shrink();
-        }
-      },
-    );
-  }
-
-  Future<Widget> generateGraphSVG(String dotString) async {
+  Future<String> generateGraphSVG(String dotString) async {
     await _controllerCompleter.future;
     try {
       String escapedDot =
@@ -87,10 +70,9 @@ class GraphSvgProvider {
         })();
       ''';
       await _webViewController.evaluateJavascript(source: jsCode);
-      final svgWidget = SvgPicture.string(_svgData);
-      return svgWidget;
+      return _svgData;
     } catch (e) {
-      return Text("Error: $e");
+      throw WebViewException('JS Error: $e');
     }
   }
 }

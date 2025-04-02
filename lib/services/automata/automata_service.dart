@@ -7,6 +7,8 @@ import 'package:ffi/ffi.dart';
 class AutomataService {
   static final AutomataService _instance = AutomataService._internal();
   static final _lib = AutomataLib().nativeLibrary;
+  static Future<String> Function(String)? dotToSvgConverter;
+  bool get isInitializedConverter => dotToSvgConverter != null;
 
   factory AutomataService() {
     return _instance;
@@ -14,20 +16,21 @@ class AutomataService {
 
   AutomataService._internal();
 
-  Map<String, Pointer<Opaque>> createFromRegex(String regex) {
+  Map<String, dynamic> createFromRegex(String regex) {
     final regexPointer = regex.toNativeUtf8().cast<Char>();
     final dfa = _lib.DFA_create_instance(regexPointer);
     final nfa = _lib.NFA_create_instance(regexPointer);
     final mdfa = _lib.DFA_minimalDFA(dfa);
     malloc.free(regexPointer);
     return {
+      'regex': regex,
       'dfa': dfa,
       'nfa': nfa,
       'mdfa': mdfa,
     };
   }
 
-  createFromDFAtable(
+  Map<String, dynamic> createFromDFAtable(
     Set<String> symbols,
     List<Map<String, int?>> tableData,
     List<int> finalStates,
@@ -87,46 +90,59 @@ class AutomataService {
     );
     final mdfa = _lib.DFA_minimalDFA(dfa);
     final nfa = _lib.NFA_create_instance_from_DFA(dfa, 1);
+    final regexPtr = _lib.DFA_regex(mdfa);
+    final regex = regexPtr.cast<Utf8>().toDartString();
     malloc.free(symbolsPointer);
     malloc.free(tablePointer);
     malloc.free(finalStatesPointer);
+    malloc.free(regexPtr);
 
     return {
+      'regex': regex,
       'nfa': nfa,
       'dfa': dfa,
       'mdfa': mdfa,
     };
   }
 
-  createFromDFA(dfaInstance) {
+  Map<String, dynamic> createFromDFA(dfaInstance) {
     final dfa = _lib.DFA_create_instance_from_DFA(dfaInstance);
     final mdfa = _lib.DFA_minimalDFA(dfaInstance);
     final nfa = _lib.NFA_create_instance_from_DFA(dfaInstance, 1);
+    final regexPtr = _lib.DFA_regex(mdfa);
+    final regex = regexPtr.cast<Utf8>().toDartString();
+    malloc.free(regexPtr);
     return {
+      'regex': regex,
       'nfa': nfa,
       'dfa': dfa,
       'mdfa': mdfa,
     };
   }
 
-  createFromNFA(nfaInstance) {
+  Map<String, dynamic> createFromNFA(nfaInstance) {
     final nfa = _lib.NFA_create_instance_from_NFA(nfaInstance);
     final dfa = _lib.DFA_create_instance_from_NFA(nfaInstance);
     final mdfa = _lib.DFA_minimalDFA(dfa);
+    final regexPtr = _lib.DFA_regex(mdfa);
+    final regex = regexPtr.cast<Utf8>().toDartString();
+    malloc.free(regexPtr);
     return {
+      'regex': regex,
       'nfa': nfa,
       'dfa': dfa,
       'mdfa': mdfa,
     };
   }
 
-  freeInstance(dfaInstance, nfaInstance, mdfaInstance) {
+  freeInstance({dfaInstance, nfaInstance, mdfaInstance}) {
     if (dfaInstance != nullptr) _lib.DFA_destroy_instance(dfaInstance);
     if (nfaInstance != nullptr) _lib.NFA_destroy_instance(nfaInstance);
     if (mdfaInstance != nullptr) _lib.DFA_destroy_instance(mdfaInstance);
   }
 
-  generateDotText(dfaInstance, nfaInstance, mdfaInstance, bool showDeadStates) {
+  generateDotText_(
+      {dfaInstance, nfaInstance, mdfaInstance, bool showDeadStates = false}) {
     final dotText = {
       'dfa': '',
       'nfa': '',
@@ -154,6 +170,51 @@ class AutomataService {
     }
 
     return dotText;
+  }
+
+  String? generateDotText(
+      {required instance, required String type, bool showDeadStates = true}) {
+    switch (type) {
+      case 'dfa':
+        if (instance == null) return null;
+        final dotTextPtr =
+            _lib.DFA_generateDotText(instance, showDeadStates ? 1 : 0);
+        String dotText = dotTextPtr.cast<Utf8>().toDartString();
+        malloc.free(dotTextPtr);
+        return dotText;
+      case 'nfa':
+        if (instance == null) return null;
+        final dotTextPtr = _lib.NFA_generateDotText(instance);
+        String dotText = dotTextPtr.cast<Utf8>().toDartString();
+        malloc.free(dotTextPtr);
+        return dotText;
+      case 'mdfa':
+        if (instance == null) return null;
+        final dotTextPtr =
+            _lib.DFA_generateDotText(instance, showDeadStates ? 1 : 0);
+        String dotText = dotTextPtr.cast<Utf8>().toDartString();
+        malloc.free(dotTextPtr);
+        return dotText;
+      default:
+        throw Exception('Invalid type');
+    }
+  }
+
+  void attachDotTextToSvgConverter(
+      Future<String> Function(String) dotToSvgConverter) {
+    AutomataService.dotToSvgConverter = dotToSvgConverter;
+  }
+
+  Future<String> convertDotToSvg(String dotText) {
+    if (dotToSvgConverter == null) {
+      throw AutomataServiceConverterUninitialized();
+    }
+    try {
+      final svgString = dotToSvgConverter!(dotText);
+      return svgString;
+    } catch (e) {
+      throw SvgException();
+    }
   }
 
   bool testString(dfaInstance, String input) {
@@ -186,6 +247,19 @@ class AutomataService {
   concatNFA(nfaInstance, otherNfa) {
     final resNfa = _lib.NFA_concat(nfaInstance, otherNfa);
     return resNfa;
+  }
+
+  String getDiffString(mdfaInstance, other) {
+    if (_lib.DFA_isMinimal(mdfaInstance) != 1 ||
+        _lib.DFA_isMinimal(other) != 1) {
+      return "";
+    }
+
+    if (isEquivalent(mdfaInstance, other)) return "";
+    final diffPointer = _lib.DFA_getDiffString(mdfaInstance, other, -1);
+    final diffString = diffPointer.cast<Utf8>().toDartString();
+    malloc.free(diffPointer);
+    return diffString;
   }
 
   bool isEquivalent(mdfaInstance, other) {

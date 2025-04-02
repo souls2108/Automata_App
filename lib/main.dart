@@ -1,5 +1,4 @@
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
-import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
 import 'package:automata_app/views/automata_operations/automata_operations.dart';
 import 'package:automata_app/views/create_automata/create_automata_view.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
-  GraphSvgProvider.instance;
 }
 
 class MyApp extends StatelessWidget {

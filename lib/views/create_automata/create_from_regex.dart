@@ -34,7 +34,6 @@ class _CreateFromRegexState extends State<CreateFromRegex> {
           onPressed: () {
             //TODO: validate regex
             final automata = Automata.fromRegex(_regex.text);
-            automata.generateDotText();
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => AutomataView(automata: automata),

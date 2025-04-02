@@ -13,7 +13,6 @@ class CreateFromTable extends StatefulWidget {
   State<CreateFromTable> createState() => _CreateFromTableState();
 }
 
-//BUG Deletion of symbol, not removed from table
 class _CreateFromTableState extends State<CreateFromTable> {
   late final TextEditingController _symbolController;
   Set<String> _symbols = {};
@@ -121,7 +120,6 @@ class _CreateFromTableState extends State<CreateFromTable> {
                   .toList();
               final automata =
                   Automata.fromDFAtable(_symbols, transitionTable, finalStates);
-              automata.generateDotText();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => AutomataView(automata: automata),

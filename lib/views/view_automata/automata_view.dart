@@ -1,8 +1,10 @@
 import 'package:automata_app/provider/automata_provider/automata_provider.dart';
 import 'package:automata_app/services/automata/automata.dart';
+import 'package:automata_app/services/automata/automata_service.dart';
 import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
 import 'package:automata_app/widgets/interactive_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class AutomataView extends StatefulWidget {
@@ -21,6 +23,7 @@ class _AutomataViewState extends State<AutomataView> {
   late final TextEditingController _testStringTextController;
   String _currentView = 'mdfa';
   final List<String> _viewItems = ['nfa', 'dfa', 'mdfa'];
+  bool showDeadStates = true;
   bool _testStringVisible = false;
   bool _isTestStringAccepted = false;
   bool _isZooming = false;
@@ -30,7 +33,12 @@ class _AutomataViewState extends State<AutomataView> {
     _nameController = TextEditingController();
     _testStringTextController = TextEditingController();
     automata = widget.automata;
-    automata.generateDotText();
+
+    if (!AutomataService().isInitializedConverter) {
+      AutomataService().attachDotTextToSvgConverter(
+        GraphSvgProvider.instance.generateGraphSVG,
+      );
+    }
     super.initState();
   }
 
@@ -121,8 +129,40 @@ class _AutomataViewState extends State<AutomataView> {
                         child: SizedBox(
                           height: 300,
                           width: MediaQuery.of(context).size.width,
-                          child: GraphSvgProvider.instance
-                              .generate(automata.dotText[_currentView]),
+                          child: FutureBuilder(
+                            future: automata.getSvg(
+                              type: _currentView,
+                              showDeadStates: showDeadStates,
+                            ),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: SizedBox(
+                                    height: 100,
+                                    width: 100,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                              if (snapshot.hasError) {
+                                return Center(
+                                  child: ColoredBox(
+                                    color: Colors.red,
+                                    child: Text(snapshot.error.toString()),
+                                  ),
+                                );
+                              }
+                              if (snapshot.hasData) {
+                                return SvgPicture.string(
+                                  snapshot.data.toString(),
+                                );
+                              }
+                              return const Center(
+                                child: Text('No data'),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -132,6 +172,23 @@ class _AutomataViewState extends State<AutomataView> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: _viewButtons(),
                     ),
+                    const SizedBox(height: 20),
+                    if (_currentView != 'nfa')
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Show dead states'),
+                          const SizedBox(width: 10),
+                          Switch(
+                            value: showDeadStates,
+                            onChanged: (value) {
+                              setState(() {
+                                showDeadStates = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     const SizedBox(height: 20),
                     if (_testStringVisible) _testStringWidget(),
                     ElevatedButton(

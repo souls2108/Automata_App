@@ -1,20 +1,19 @@
+import 'package:automata_app/services/automata/automata_exceptions.dart';
 import 'package:automata_app/services/automata/automata_service.dart';
 
-import 'dart:developer' as devtool show log;
-
 class Automata {
-  late final String regex;
   late final Map<String, dynamic> automataData;
-  late Map<String, dynamic> dotText;
+  late final Map<String, String> dotText;
+  late final Map<List, String> svgDataCache;
 
-  Automata.fromRegex(this.regex) {
+  Automata.fromRegex(regex) {
     automataData = AutomataService().createFromRegex(regex);
+    svgDataCache = {};
   }
 
   Automata.fromAutomata(Automata other) {
-    regex = other.regex;
     automataData = Map<String, dynamic>.from(other.automataData);
-    dotText = Map<String, dynamic>.from(other.dotText);
+    svgDataCache = Map<List, String>.from(other.svgDataCache);
   }
 
   Automata.fromDFAtable(
@@ -24,30 +23,64 @@ class Automata {
   ) {
     automataData =
         AutomataService().createFromDFAtable(symbols, tableData, finalStates);
+    svgDataCache = {};
   }
 
   Automata._fromDFA(dfaInstance) {
     automataData = AutomataService().createFromDFA(dfaInstance);
+    svgDataCache = {};
   }
 
   Automata._fromNFA(nfaInstance) {
     automataData = AutomataService().createFromNFA(nfaInstance);
+    svgDataCache = {};
   }
 
-  generateDotText() {
-    final dfa = automataData['dfa'];
-    final nfa = automataData['nfa'];
-    final mdfa = automataData['mdfa'];
-    dotText = AutomataService().generateDotText(dfa, nfa, mdfa, true);
+  Future<String> getSvg({
+    required String type,
+    bool showDeadStates = true,
+  }) async {
+    if (svgDataCache.containsKey([type, showDeadStates])) {
+      return svgDataCache[[type, showDeadStates]]!;
+    }
+
+    String? dotText = AutomataService().generateDotText(
+      instance: automataData[type],
+      type: type,
+      showDeadStates: showDeadStates,
+    );
+    if (dotText == null) {
+      throw DotTextException();
+    }
+
+    final svgString = await AutomataService().convertDotToSvg(dotText);
+    svgDataCache[[type, showDeadStates]] = svgString;
+    return svgString;
   }
 
-  // bool equals(Automata other) {
-  //   return AutomataService()
-  //       .compareAutomata(automataData['mdfa'], other.automataData['mdfa']);
-  // }
+  bool equals(Automata other) {
+    return AutomataService().isEquivalent(
+      automataData['mdfa']!,
+      other.automataData['mdfa']!,
+    );
+  }
+
+  bool isSubset(Automata other) {
+    return AutomataService().isSubset(
+      automataData['mdfa']!,
+      other.automataData['mdfa']!,
+    );
+  }
+
+  bool isSuperset(Automata other) {
+    return AutomataService().isSubset(
+      other.automataData['mdfa']!,
+      automataData['mdfa']!,
+    );
+  }
 
   bool testString(String str) {
-    final mdfa = automataData['mdfa'];
+    final mdfa = automataData['mdfa']!;
     return AutomataService().testString(mdfa, str);
   }
 
@@ -55,14 +88,16 @@ class Automata {
     final dfa = automataData['dfa'];
     final nfa = automataData['nfa'];
     final mdfa = automataData['mdfa'];
-    AutomataService().freeInstance(dfa, nfa, mdfa);
+    AutomataService().freeInstance(
+      dfaInstance: dfa,
+      nfaInstance: nfa,
+      mdfaInstance: mdfa,
+    );
   }
 
   Automata union(Automata other) {
-    devtool.log('Union 1');
     final nfaInstance = AutomataService()
         .unionNFA(automataData['nfa'], other.automataData['nfa']);
-    devtool.log('Union 2');
     final resAutomata = Automata._fromNFA(nfaInstance);
     return resAutomata;
   }
