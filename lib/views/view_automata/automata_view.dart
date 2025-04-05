@@ -154,8 +154,10 @@ class _AutomataViewState extends State<AutomataView> {
                                 );
                               }
                               if (snapshot.hasData) {
-                                return SvgPicture.string(
-                                  snapshot.data.toString(),
+                                return RepaintBoundary(
+                                  child: SvgPicture.string(
+                                    snapshot.data.toString(),
+                                  ),
                                 );
                               }
                               return const Center(
@@ -200,7 +202,9 @@ class _AutomataViewState extends State<AutomataView> {
                       child:
                           Text(_testStringVisible ? 'Collapse' : 'Test String'),
                     ),
+                    const SizedBox(height: 20),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         saveButton(),
                         deleteButton(),
@@ -219,6 +223,7 @@ class _AutomataViewState extends State<AutomataView> {
         .map(
           (view) => ElevatedButton(
             onPressed: () {
+              if (_currentView == view) return;
               setState(() {
                 _currentView = view;
               });

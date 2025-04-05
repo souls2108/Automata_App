@@ -1,10 +1,14 @@
 import 'package:automata_app/services/automata/automata_exceptions.dart';
 import 'package:automata_app/services/automata/automata_service.dart';
 
+import 'dart:developer' as devtools show log;
+
+import 'package:automata_app/services/graph_svg/graph_svg_provider.dart';
+
 class Automata {
   late final Map<String, dynamic> automataData;
   late final Map<String, String> dotText;
-  late final Map<List, String> svgDataCache;
+  late final Map<String, String> svgDataCache;
 
   Automata.fromRegex(regex) {
     automataData = AutomataService().createFromRegex(regex);
@@ -13,7 +17,7 @@ class Automata {
 
   Automata.fromAutomata(Automata other) {
     automataData = Map<String, dynamic>.from(other.automataData);
-    svgDataCache = Map<List, String>.from(other.svgDataCache);
+    svgDataCache = Map<String, String>.from(other.svgDataCache);
   }
 
   Automata.fromDFAtable(
@@ -40,8 +44,11 @@ class Automata {
     required String type,
     bool showDeadStates = true,
   }) async {
-    if (svgDataCache.containsKey([type, showDeadStates])) {
-      return svgDataCache[[type, showDeadStates]]!;
+    devtools.log('getSvg Cache: ${svgDataCache.keys.toString()}');
+    final cacheKey = '$type-$showDeadStates';
+    if (svgDataCache.containsKey(cacheKey)) {
+      devtools.log('Cache hit for $cacheKey');
+      return svgDataCache[cacheKey]!;
     }
 
     String? dotText = AutomataService().generateDotText(
@@ -53,9 +60,8 @@ class Automata {
       throw DotTextException();
     }
 
-    final svgString = await AutomataService().convertDotToSvg(dotText);
-    svgDataCache[[type, showDeadStates]] = svgString;
-    return svgString;
+    final svgString = await GraphSvgProvider.instance.generateGraphSVG(dotText);
+    return svgDataCache[cacheKey] = svgString;
   }
 
   bool equals(Automata other) {
