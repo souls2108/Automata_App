@@ -115,6 +115,30 @@ class _AutomataViewState extends State<AutomataView> {
                   children: [
                     nameField(),
                     const SizedBox(height: 20),
+                    const Text("Regex:"),
+                    Container(
+                      constraints: const BoxConstraints(
+                        maxHeight: 300,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.purple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.purple.shade50,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Text(
+                          automata.automataData['regex'] + "    ",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     Text('View: ${_currentView.toUpperCase()}'),
                     Container(
                       decoration: BoxDecoration(
@@ -126,44 +150,44 @@ class _AutomataViewState extends State<AutomataView> {
                       ),
                       child: InteractiveWidget(
                         onZoomChange: _onZoomChange,
-                        child: SizedBox(
-                          height: 300,
-                          width: MediaQuery.of(context).size.width,
-                          child: FutureBuilder(
-                            future: automata.getSvg(
-                              type: _currentView,
-                              showDeadStates: showDeadStates,
-                            ),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: SizedBox(
-                                    height: 100,
-                                    width: 100,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                              if (snapshot.hasError) {
-                                return Center(
-                                  child: ColoredBox(
-                                    color: Colors.red,
-                                    child: Text(snapshot.error.toString()),
-                                  ),
-                                );
-                              }
-                              if (snapshot.hasData) {
-                                return RepaintBoundary(
-                                  child: SvgPicture.string(
+                        child: RepaintBoundary(
+                          child: SizedBox(
+                            height: 300,
+                            width: MediaQuery.of(context).size.width,
+                            child: FutureBuilder(
+                              future: automata.getSvg(
+                                type: _currentView,
+                                showDeadStates: showDeadStates,
+                              ),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+                                if (snapshot.hasError) {
+                                  return Center(
+                                    child: ColoredBox(
+                                      color: Colors.red,
+                                      child: Text(snapshot.error.toString()),
+                                    ),
+                                  );
+                                }
+                                if (snapshot.hasData) {
+                                  return SvgPicture.string(
                                     snapshot.data.toString(),
-                                  ),
+                                  );
+                                }
+                                return const Center(
+                                  child: Text('No data'),
                                 );
-                              }
-                              return const Center(
-                                child: Text('No data'),
-                              );
-                            },
+                              },
+                            ),
                           ),
                         ),
                       ),
